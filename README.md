@@ -17,4 +17,8 @@ python3 api.py
 ```
 SERVER_ADDRESS=127.0.0.1
 ```
+* In order to prevent future changes to the `env` file, use this command:
+```
+ git update-index --skip-worktree android/app/src/main/assets/env
+```
 * Install the Android app on your phone or use the emulator within Android Studio itself.
