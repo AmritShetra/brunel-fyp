@@ -13,5 +13,8 @@ pip3 install -r requirements.txt
 ```
 python3 api.py
 ```
+* Note down the server machine's IP address, and add this to `/android/app/src/main/assets/env`, like so:
+```
+SERVER_ADDRESS=127.0.0.1
+```
 * Install the Android app on your phone or use the emulator within Android Studio itself.
-
