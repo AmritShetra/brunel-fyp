@@ -19,3 +19,15 @@ SERVER_ADDRESS=127.0.0.1
 ```
 * Install the Android app on your phone or use the emulator within Android Studio itself.
 
+### Usage
+* To observe the database, you can enter the container and open up a shell instance:
+```
+docker exec -it server_api_1 /bin/bash
+flask shell 
+```
+* You can then import objects and run database queries, like so:
+```
+from app import db, User
+User.query.all()
+```
+
