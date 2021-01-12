@@ -1,27 +1,27 @@
-from flask_sqlalchemy import SQLAlchemy
 import flask
+from models import db, User
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///database.db'
-db = SQLAlchemy(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100))
+# Specify which app we are using with SQLAlchemy
+app.app_context().push()
+db.init_app(app)
 
-    def __repr__(self):
-        return f"User {self.id}: {self.username}"
-
-# Tables must be created after models are defined.
-db.create_all()
 
 @app.route('/')
 def home():
     return "Hello World!"
 
 
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'User': User}
+
+
 # https://stackoverflow.com/questions/7023052/configure-flask-dev-server-to-be-visible-across-the-network
 if __name__ == '__main__':
+    # Create database tables
+    db.create_all()
     app.run(host='0.0.0.0')
-

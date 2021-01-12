@@ -25,9 +25,11 @@ SERVER_ADDRESS=127.0.0.1
 docker exec -it server_api_1 /bin/bash
 flask shell 
 ```
-* You can then import objects and run database queries, like so:
+* You can then run database queries, like below, where a new User instance is stored in the table. The first and last lines are used to illustrate the changes made.
 ```
-from app import db, User
+User.query.all()
+db.session.add()
+db.session.commit(User(username="Amrit"))
 User.query.all()
 ```
 
