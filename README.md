@@ -28,8 +28,8 @@ flask shell
 * You can then run database queries, like below, where a new User instance is stored in the table. The first and last lines are used to illustrate the changes made.
 ```
 User.query.all()
-db.session.add()
-db.session.commit(User(username="Amrit"))
+db.session.add(User(username="Amrit"))
+db.session.commit()
 User.query.all()
 ```
 
