@@ -22,7 +22,7 @@ SERVER_ADDRESS=127.0.0.1
 ### Usage
 * To observe the database, you can enter the container and open up a shell instance:
 ```
-docker exec -it server_api_1 /bin/bash
+docker exec -it api /bin/bash
 flask shell 
 ```
 * You can then run database queries, like below, where a new User instance is stored in the table. The first and last lines are used to illustrate the changes made.

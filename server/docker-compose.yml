@@ -9,7 +9,8 @@ x-environment: &env
     POSTGRES_DB: db
 
 services:
-    api:
+    server:
+        container_name: api
         build: .
         ports:
             - 5000:5000
