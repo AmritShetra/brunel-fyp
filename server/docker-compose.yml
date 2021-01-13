@@ -1,8 +1,23 @@
-version: '3'
+version: '3.4'
+
+# https://stackoverflow.com/a/54503302
+x-environment: &env
+    POSTGRES_USER: user
+    POSTGRES_PASSWORD: password
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: 5432
+    POSTGRES_DB: db
 
 services:
     api:
         build: .
         ports:
             - 5000:5000
+        environment: *env
+        depends_on:
+            - database
+    database:
+        container_name: postgres
+        image: postgres:13.1
+        environment: *env
 
