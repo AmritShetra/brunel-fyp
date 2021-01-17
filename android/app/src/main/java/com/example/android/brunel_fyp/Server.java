@@ -4,13 +4,15 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 class Server {
 
-    // https://github.com/cdimascio/dotenv-java
     private static Dotenv dotenv = Dotenv.configure()
             .directory("./assets")
             .filename("env")
             .load();
 
-    static String getAddress() {
-        return dotenv.get("SERVER_ADDRESS");
+    private static String address = dotenv.get("SERVER_ADDRESS");
+
+    // Sends back the address (e.g. localhost:5000) + an extension (e.g. /user/1/)
+    static String route(String extension) {
+        return address + extension;
     }
 }

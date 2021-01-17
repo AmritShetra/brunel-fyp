@@ -33,3 +33,6 @@ db.session.commit()
 User.query.all()
 ```
 
+### Notes
+* [dotenv-java](https://github.com/cdimascio/dotenv-java) used to load environment variables in Android Studio.
+* [android-async-http](https://loopj.com/android-async-http/) used for API calls.
