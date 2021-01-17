@@ -1,8 +1,8 @@
-import flask
+from flask import Flask, jsonify
 from config import Config
 from models import db, User
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.config.from_object(Config)
 
 # Specify which app we are using with SQLAlchemy
@@ -12,7 +12,10 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    return "Hello World!"
+    response = {
+        "text": "Hello world!"
+    }
+    return jsonify(response)
 
 
 # Provides access to objects in shell without needing to import manually
