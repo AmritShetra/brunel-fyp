@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">brunel-fyp</string>
+
+    <string name="login">Log In</string>
+    <string name="signup">Sign Up</string>
+    <string name="existing">Already have an account?</string>
+    <string name="intro">New to the app? Register here!</string>
 </resources>
