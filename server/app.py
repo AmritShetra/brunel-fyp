@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from config import Config
-from models import db, User
+from models import db, User, Trophies, MachineLearning
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -21,7 +21,12 @@ def home():
 # Provides access to objects in shell without needing to import manually
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User}
+    return {
+        'db': db,
+        'User': User,
+        'Trophies': Trophies,
+        'MachineLearning': MachineLearning
+    }
 
 
 # https://stackoverflow.com/questions/7023052/configure-flask-dev-server-to-be-visible-across-the-network
