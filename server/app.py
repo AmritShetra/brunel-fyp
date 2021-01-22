@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from config import Config
 from models import db, User, Trophies, MachineLearning
 
@@ -16,6 +16,55 @@ def home():
         "text": "Hello world!"
     }
     return jsonify(response)
+
+
+@app.route('/signup/', methods=['POST'])
+def create_user():
+    data = request.json
+
+    # Check if the username/email are taken
+    response = ""
+    if User.query.filter_by(username=data["username"]).first():
+        response += "Username already exists."
+    if User.query.filter_by(email=data["email"]).first():
+        response += "Email already exists."
+    if not response == "":
+        return response
+
+    # If not, add the user to the database
+    user = User(
+        username=data["username"],
+        password=data["password"],
+        email=data["email"],
+        first_name=data["first_name"],
+        last_name=data["last_name"]
+    )
+    db.session.add(user)
+
+    # And create a trophies object with the new user's id
+    user_id = User.query.filter_by(username=data["username"]).first().id
+    trophies = Trophies(
+        user_id=user_id
+    )
+    db.session.add(trophies)
+
+    db.session.commit()
+    return user.username + " added to database."
+
+
+@app.route('/login/', methods=['POST'])
+def get_user():
+    data = request.json
+
+    # Checking if the username exists beforehand
+    user = User.query.filter_by(username=data["username"]).first()
+    if user:
+        if user.password == data['password']:
+            return "Authenticated."
+        else:
+            return "Please check your login details and try again."
+    else:
+        return "Username not found."
 
 
 # Provides access to objects in shell without needing to import manually

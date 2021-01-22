@@ -8,6 +8,6 @@ port = os.environ['POSTGRES_PORT']
 
 
 class Config(object):
-    DEBUG = False
+    DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
