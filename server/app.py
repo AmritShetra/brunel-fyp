@@ -58,13 +58,13 @@ def get_user():
 
     # Checking if the username exists beforehand
     user = User.query.filter_by(username=data["username"]).first()
-    if user:
-        if user.password == data['password']:
-            return "Authenticated."
-        else:
-            return "Please check your login details and try again."
+    if not user:
+        return "Username not found.", 401
+
+    if user.password == data['password']:
+        return "Authenticated.", 200
     else:
-        return "Username not found."
+        return "Please check your login details and try again.", 401
 
 
 # Provides access to objects in shell without needing to import manually
