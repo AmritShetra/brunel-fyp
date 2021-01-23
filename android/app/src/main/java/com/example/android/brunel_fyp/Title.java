@@ -18,8 +18,10 @@ public class Title extends AppCompatActivity {
         logIn.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), Login.class);
             startActivity(intent);
-            finish();
         });
-        signUp.setOnClickListener(view -> System.out.println("signUp"));
+        signUp.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), SignUp.class);
+            startActivity(intent);
+        });
     }
 }
