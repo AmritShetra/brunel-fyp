@@ -17,6 +17,8 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
+    // TODO: Eventually remove this, it's basically just for testing the API
+
     TextView text;
     Button button;
     ProgressBar progressBar;

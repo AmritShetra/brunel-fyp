@@ -5,4 +5,10 @@
     <string name="signup">Sign Up</string>
     <string name="existing">Already have an account?</string>
     <string name="intro">New to the app? Register here!</string>
+
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
 </resources>
