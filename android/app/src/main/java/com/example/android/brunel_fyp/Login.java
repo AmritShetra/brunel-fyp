@@ -32,23 +32,23 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        userField = findViewById(R.id.userField);
-        passwordField = findViewById(R.id.passwordField);
+        userField = findViewById(R.id.username);
+        passwordField = findViewById(R.id.password);
         loginButton = findViewById(R.id.logIn);
         progressBar = findViewById(R.id.progressBar);
 
         loginButton.setOnClickListener(view -> {
-            String username = userField.getText().toString();
-            String password = passwordField.getText().toString();
             try {
-                login(view, username, password);
+                login(view);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
 
-    private void login(View view, String username, String password) throws UnsupportedEncodingException, JSONException {
+    private void login(View view) throws UnsupportedEncodingException, JSONException {
+        String username = userField.getText().toString();
+        String password = passwordField.getText().toString();
         if (username.isEmpty() || password.isEmpty()) {
             String text = "Field(s) blank, please try again.";
             Snackbar.make(view, text, Snackbar.LENGTH_LONG).show();
