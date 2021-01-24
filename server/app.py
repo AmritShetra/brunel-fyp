@@ -29,7 +29,7 @@ def create_user():
     if User.query.filter_by(email=data["email"]).first():
         response += "Email already exists."
     if not response == "":
-        return response
+        return response, 409
 
     # If not, add the user to the database
     user = User(
@@ -49,7 +49,7 @@ def create_user():
     db.session.add(trophies)
 
     db.session.commit()
-    return user.username + " added to database."
+    return user.username + " added to database.", 200
 
 
 @app.route('/login/', methods=['POST'])
