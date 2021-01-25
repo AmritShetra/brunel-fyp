@@ -1,6 +1,7 @@
 package com.example.android.brunel_fyp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -75,7 +76,13 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                // TODO: Store credentials
+                // Saving user details to the device
+                SharedPreferences user = getSharedPreferences("User", 0);
+                SharedPreferences.Editor editor = user.edit();
+                editor.putString("username", username);
+                editor.putString("password", password);
+                editor.apply();
+
                 // TODO: Send the user to an actual screen, e.g. Chatbot
                 Intent intent = new Intent(view.getContext(), MainActivity.class);
                 startActivity(intent);

@@ -1,5 +1,6 @@
 package com.example.android.brunel_fyp;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
         text = findViewById(R.id.text);
         button = findViewById(R.id.button);
         progressBar = findViewById(R.id.progressBar);
+
+        // Displaying the stored username once logged in
+        SharedPreferences user = getSharedPreferences("User", 0);
+        String username = user.getString("username","");
+        button.setText(username);
 
         button.setOnClickListener(view -> getMessage());
     }
