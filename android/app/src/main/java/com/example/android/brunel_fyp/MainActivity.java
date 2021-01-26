@@ -1,65 +1,49 @@
 package com.example.android.brunel_fyp;
 
-import android.content.SharedPreferences;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
-
-    // TODO: Eventually remove this, it's basically just for testing the API
-
-    TextView text;
-    Button button;
-    ProgressBar progressBar;
-    AsyncHttpClient client = new AsyncHttpClient();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        text = findViewById(R.id.text);
-        button = findViewById(R.id.button);
-        progressBar = findViewById(R.id.progressBar);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        // Displaying the stored username once logged in
-        SharedPreferences user = getSharedPreferences("User", 0);
-        String username = user.getString("username","");
-        button.setText(username);
+        // Once logged in, show a fragment by default
+        loadFragment(new Profile());
+        // Default selected item in nav bar is the 1st one, so change that
+        bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
 
-        button.setOnClickListener(view -> getMessage());
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            Fragment fragment = null;
+            switch (menuItem.getItemId()) {
+                case R.id.navigation_chatbot:
+                    fragment = new Chatbot();
+                    break;
+                case R.id.navigation_trophies:
+                    fragment = new Trophies();
+                    break;
+                case R.id.navigation_profile:
+                    fragment = new Profile();
+                    break;
+            }
+            loadFragment(fragment);
+            return true;
+        });
     }
 
-    private void getMessage() {
-        client.get(Server.route("/"), null, new JsonHttpResponseHandler(){
-            @Override
-            public void onStart(){
-                progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    String message = response.getString("text");
-                    text.setText(message);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        });
+    private void loadFragment(Fragment fragment) {
+        // Switch fragments
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, fragment)
+                    .commit();
+        }
     }
 }
