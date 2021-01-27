@@ -1,3 +1,4 @@
+import werkzeug
 from flask import Flask, jsonify, request
 from config import Config
 from models import db, User, Trophies, MachineLearning
@@ -53,7 +54,7 @@ def create_user():
 
 
 @app.route('/login/', methods=['POST'])
-def get_user():
+def login():
     data = request.json
 
     # Checking if the username exists beforehand
@@ -65,6 +66,14 @@ def get_user():
         return "Authenticated.", 200
     else:
         return "Please check your login details and try again.", 401
+
+
+@app.route('/classify/', methods=['POST'])
+def process_photo():
+    photo = request.files["photo"]
+    photo_filename = werkzeug.utils.secure_filename(photo.filename)
+    photo.save(photo_filename)
+    return "Photo received", 200
 
 
 # Provides access to objects in shell without needing to import manually
