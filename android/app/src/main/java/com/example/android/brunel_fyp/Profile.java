@@ -27,12 +27,10 @@ public class Profile extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         View parentHolder = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // Inflate the layout for this fragment
         text = parentHolder.findViewById(R.id.text);
         button = parentHolder.findViewById(R.id.button);
         progressBar = parentHolder.findViewById(R.id.progressBar);
@@ -47,6 +45,7 @@ public class Profile extends Fragment {
         return parentHolder;
     }
 
+    // TODO: This should retrieve profile data
     private void getMessage() {
         client.get(Server.route("/"), null, new JsonHttpResponseHandler(){
             @Override

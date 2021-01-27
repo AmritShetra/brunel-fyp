@@ -4,6 +4,7 @@
     package="com.example.android.brunel_fyp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera2" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -37,7 +38,10 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"
