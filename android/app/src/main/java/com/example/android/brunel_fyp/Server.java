@@ -11,8 +11,8 @@ class Server {
 
     private static String address = dotenv.get("SERVER_ADDRESS");
 
-    // Sends back the address (e.g. localhost:5000) + an extension (e.g. /user/1/)
-    static String route(String extension) {
-        return address + extension;
-    }
+    static String loginRoute() { return address + "/login/"; }
+    static String registerRoute() { return address + "/register/"; }
+    static String profileRoute() { return address + "/users/"; }
+    static String chatbotRoute() { return address + "/classify/"; }
 }

@@ -64,10 +64,11 @@ public class Chatbot extends Fragment {
             photo.compress(Bitmap.CompressFormat.PNG, 90, stream);
             byte[] img = stream.toByteArray();
 
+            String url = Server.chatbotRoute();
             RequestParams params = new RequestParams();
             params.put("photo", new ByteArrayInputStream(img), "app_image.png");
 
-            client.post(Server.route("/classify/"), params, new TextHttpResponseHandler(){
+            client.post(url, params, new TextHttpResponseHandler(){
                 @Override
                 public void onStart(){
                     System.out.println("Starting.");

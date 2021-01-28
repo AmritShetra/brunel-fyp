@@ -16,4 +16,9 @@
     <string name="trophies">Trophies</string>
     <string name="chatbot">Chatbot</string>
     <string name="profile">Profile</string>
+
+    <string name="avatar">Avatar</string>
+    <string name="details">Details</string>
+    <string name="edit">Edit</string>
+    <string name="logout">Log Out</string>
 </resources>

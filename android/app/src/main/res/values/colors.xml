@@ -4,5 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="background">#F8F4EF</color>
+
     <color name="menu">#DBDBDB</color>
+
+    <color name="profile_green">#A6D9BD</color>
+    <color name="profile_green_lighter">#EDF7F2</color>
 </resources>

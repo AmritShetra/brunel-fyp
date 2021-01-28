@@ -56,7 +56,7 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-        String url = Server.route("/login/");
+        String url = Server.loginRoute();
         JSONObject json = new JSONObject();
         json.put("username", username);
         json.put("password", password);

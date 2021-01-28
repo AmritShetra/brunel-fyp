@@ -72,7 +72,7 @@ public class SignUp extends AppCompatActivity {
             return;
         }
 
-        String url = Server.route("/signup/");
+        String url = Server.registerRoute();
         JSONObject json = new JSONObject();
         json.put("username", username);
         json.put("password", password);
