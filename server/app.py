@@ -68,6 +68,25 @@ def login():
         return "Please check your login details and try again.", 401
 
 
+@app.route('/users/', methods=['POST'])
+def get_user():
+    data = request.json
+
+    # Checking if the username exists beforehand
+    user = User.query.filter_by(username=data["username"]).first()
+    if not user:
+        return "Username not found.", 401
+
+    if user.password == data['password']:
+        return {
+                   "first_name": user.first_name,
+                   "last_name": user.last_name,
+                   "email": user.email
+               }, 200
+    else:
+        return "Not authenticated, please login again.", 401
+
+
 @app.route('/classify/', methods=['POST'])
 def process_photo():
     photo = request.files["photo"]
