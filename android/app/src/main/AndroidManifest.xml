@@ -16,7 +16,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".Title"
+            android:name=".TitleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -27,14 +27,14 @@
         </activity>
 
         <activity
-            android:name=".Login"
-            android:parentActivityName=".Title"
+            android:name=".LoginActivity"
+            android:parentActivityName=".TitleActivity"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".SignUp"
-            android:parentActivityName=".Title"
+            android:name=".SignUpActivity"
+            android:parentActivityName=".TitleActivity"
             android:screenOrientation="portrait">
         </activity>
 

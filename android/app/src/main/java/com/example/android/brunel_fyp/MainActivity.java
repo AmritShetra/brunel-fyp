@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         // Once logged in, show a fragment by default
-        loadFragment(new Profile());
+        loadFragment(new ProfileFragment());
         // Default selected item in nav bar is the 1st one, so change that
         bottomNavigationView.setSelectedItemId(R.id.navigation_profile);
 
@@ -23,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = null;
             switch (menuItem.getItemId()) {
                 case R.id.navigation_chatbot:
-                    fragment = new Chatbot();
+                    fragment = new ChatbotFragment();
                     break;
                 case R.id.navigation_trophies:
-                    fragment = new Trophies();
+                    fragment = new TrophiesFragment();
                     break;
                 case R.id.navigation_profile:
-                    fragment = new Profile();
+                    fragment = new ProfileFragment();
                     break;
             }
             loadFragment(fragment);

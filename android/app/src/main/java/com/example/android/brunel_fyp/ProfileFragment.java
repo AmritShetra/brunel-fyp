@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
-public class Profile extends Fragment {
+public class ProfileFragment extends Fragment {
 
     ImageView logout, edit;
     TextView usernameText, firstNameText, lastNameText, emailText, passwordText;
@@ -68,7 +68,7 @@ public class Profile extends Fragment {
             editor.clear();
             editor.apply();
 
-            Intent intent = new Intent(getContext(), Title.class);
+            Intent intent = new Intent(getContext(), TitleActivity.class);
             startActivity(intent);
             getActivity().finish();
         });

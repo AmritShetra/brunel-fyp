@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
-public class SignUp extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     EditText userField, passwordField, emailField, firstNameField, lastNameField;
     ImageView userWarning, passwordWarning, emailWarning, firstNameWarning, lastNameWarning;
@@ -103,7 +103,7 @@ public class SignUp extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Intent intent = new Intent(view.getContext(), Login.class);
+                Intent intent = new Intent(view.getContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
             }

@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 
-public class Title extends AppCompatActivity {
+public class TitleActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +25,11 @@ public class Title extends AppCompatActivity {
         Button signUp = findViewById(R.id.signUp);
 
         logIn.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), Login.class);
+            Intent intent = new Intent(view.getContext(), LoginActivity.class);
             startActivity(intent);
         });
         signUp.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), SignUp.class);
+            Intent intent = new Intent(view.getContext(), SignUpActivity.class);
             startActivity(intent);
         });
     }
