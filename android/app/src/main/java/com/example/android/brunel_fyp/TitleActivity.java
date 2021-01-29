@@ -1,7 +1,6 @@
 package com.example.android.brunel_fyp;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -14,8 +13,7 @@ public class TitleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_title);
 
         // If the user is logged in, skip this activity completely
-        SharedPreferences user = getSharedPreferences("User", 0);
-        if (user.contains("username")) {
+        if ( User.loggedInCheck(getApplicationContext()) ) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();

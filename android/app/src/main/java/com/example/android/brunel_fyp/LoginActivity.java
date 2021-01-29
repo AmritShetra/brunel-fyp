@@ -76,12 +76,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                // Saving user details to the device
-                SharedPreferences user = getSharedPreferences("User", 0);
-                SharedPreferences.Editor editor = user.edit();
-                editor.putString("username", username);
-                editor.putString("password", password);
-                editor.apply();
+                // Saving user details to the device's shared preferences
+                User.setDetails(getApplicationContext(), username, password);
 
                 // Take the user to the main screen (which contains the fragments)
                 Intent intent = new Intent(view.getContext(), MainActivity.class);

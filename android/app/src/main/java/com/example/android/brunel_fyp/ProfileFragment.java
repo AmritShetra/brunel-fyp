@@ -19,10 +19,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ProfileFragment extends Fragment {
 
@@ -52,21 +49,14 @@ public class ProfileFragment extends Fragment {
         progressBar = parentHolder.findViewById(R.id.progressBar);
 
         // Getting the username and password that was used to log in with
-        SharedPreferences user = getActivity().getSharedPreferences("User", 0);
-        String username = user.getString("username","");
-        String password = user.getString("password", "");
+        String username = User.getUsername(getActivity());
+        String password = User.getPassword(getActivity());
 
-        try {
-            getProfileData(username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getProfileData(username, password);
 
         // Clear the stored details and go back to the Title screen
         logout.setOnClickListener(view -> {
-            SharedPreferences.Editor editor = user.edit();
-            editor.clear();
-            editor.apply();
+            User.clear(getActivity());
 
             Intent intent = new Intent(getContext(), TitleActivity.class);
             startActivity(intent);
@@ -93,14 +83,11 @@ public class ProfileFragment extends Fragment {
         return parentHolder;
     }
 
-    private void getProfileData(String username, String password) throws UnsupportedEncodingException, JSONException {
+    private void getProfileData(String username, String password) {
         String url = Server.profileRoute();
-        JSONObject json = new JSONObject();
-        json.put("username", username);
-        json.put("password", password);
-        StringEntity entity = new StringEntity(json.toString());
 
-        client.post(getActivity(), url, entity,"application/json", new JsonHttpResponseHandler(){
+        client.setBasicAuth(username, password);
+        client.get(url, new JsonHttpResponseHandler() {
             @Override
             public void onStart(){
                 progressBar.setVisibility(View.VISIBLE);
@@ -108,10 +95,8 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Snackbar.make(
-                        getActivity().findViewById(android.R.id.content),
-                        responseString,
-                        Snackbar.LENGTH_LONG).show();
+                View content = getActivity().findViewById(android.R.id.content);
+                Snackbar.make(content, responseString, Snackbar.LENGTH_LONG).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
@@ -123,7 +108,8 @@ public class ProfileFragment extends Fragment {
                     lastNameText.setText(response.getString("last_name"));
                     emailText.setText(response.getString("email"));
                     passwordText.setText(hidePassword(password));
-                } catch (JSONException e) {
+                }
+                catch (JSONException e) {
                     e.printStackTrace();
                 }
                 progressBar.setVisibility(View.INVISIBLE);

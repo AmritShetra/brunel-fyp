@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,14 +38,6 @@ public class ChatbotFragment extends Fragment {
 
     AsyncHttpClient client = new AsyncHttpClient();
 
-    // Add the message view to the linear layout and scroll down
-    private View addView (int viewLayout){
-        View newView = getLayoutInflater().inflate(viewLayout, linearLayout, false);
-        linearLayout.addView(newView);
-        scrollView.post(() -> scrollView.fullScroll(ScrollView.FOCUS_DOWN));
-        return newView;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -64,6 +57,14 @@ public class ChatbotFragment extends Fragment {
         firstUserButton.setOnClickListener(view -> showRecycleInstructions());
 
         return parentHolder;
+    }
+
+    // Add the message view to the linear layout and scroll down
+    private View addView (int viewLayout){
+        View newView = getLayoutInflater().inflate(viewLayout, linearLayout, false);
+        linearLayout.addView(newView);
+        scrollView.post(() -> scrollView.fullScroll(ScrollView.FOCUS_DOWN));
+        return newView;
     }
 
     // Make the chatbot's response visible and edit the text appropriately
@@ -116,8 +117,8 @@ public class ChatbotFragment extends Fragment {
         String url = Server.chatbotRoute();
         RequestParams params = new RequestParams();
 
-        SharedPreferences user = getActivity().getSharedPreferences("User", 0);
-        String username = user.getString("username","");
+        // Get username from SharedPreferences
+        String username = User.getUsername(getActivity());
 
         params.put("photo", new ByteArrayInputStream(img), username + "_app_image.png");
 
