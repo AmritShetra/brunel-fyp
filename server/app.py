@@ -68,21 +68,24 @@ def login():
         return "Please check your login details and try again.", 401
 
 
-@app.route('/users/', methods=['POST'])
+@app.route('/users/', methods=['GET'])
 def get_user():
-    data = request.json
+    username = request.authorization.username
+    password = request.authorization.password
 
     # Checking if the username exists beforehand
-    user = User.query.filter_by(username=data["username"]).first()
+    user = User.query.filter_by(username=username).first()
     if not user:
         return "Username not found.", 401
 
-    if user.password == data['password']:
-        return {
+    # If passwords match, send the account's details over
+    if user.password == password:
+        data = {
                    "first_name": user.first_name,
                    "last_name": user.last_name,
                    "email": user.email
-               }, 200
+               }
+        return data, 200
     else:
         return "Not authenticated, please login again.", 401
 
