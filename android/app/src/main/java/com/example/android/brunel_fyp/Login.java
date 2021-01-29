@@ -83,7 +83,7 @@ public class Login extends AppCompatActivity {
                 editor.putString("password", password);
                 editor.apply();
 
-                // TODO: Send the user to an actual screen, e.g. Chatbot
+                // Take the user to the main screen (which contains the fragments)
                 Intent intent = new Intent(view.getContext(), MainActivity.class);
                 startActivity(intent);
                 finish();

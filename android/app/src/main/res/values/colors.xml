@@ -9,4 +9,7 @@
 
     <color name="profile_green">#A6D9BD</color>
     <color name="profile_green_lighter">#EDF7F2</color>
+
+    <color name="chatbot_message">#738CB6</color>
+    <color name="user_message">#73B697</color>
 </resources>

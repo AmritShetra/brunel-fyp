@@ -21,4 +21,12 @@
     <string name="details">Details</string>
     <string name="edit">Edit</string>
     <string name="logout">Log Out</string>
+
+    <string name="intro_message">Hi! I\'m Carl the Chatbot, happy to help. 
+        Do you have any items to recycle, or do you need help with something else? </string>
+    <string name="recycle_option">Recycle</string>
+    <string name="recycle_response">You would like to recycle an item, sure thing.
+        You\'ll need to take a photo of the recycling code on the side of the packaging so I can
+        tell you what to do!</string>
+    <string name="take_photo">Take Photo</string>
 </resources>
