@@ -22,18 +22,26 @@
     <string name="edit">Edit</string>
     <string name="logout">Log Out</string>
 
-    <!-- Chatbot -->
-    <string name="intro_message">
-        Hi! I\'m Carl the Chatbot, happy to help.
-        Do you have any items to recycle, or do you need help with something else?
+    <!-- Chatbot messages -->
+    <string name="intro_message">Hi! I\'m Carl the Chatbot, happy to help. Do you have any items to recycle, or do you need help with something else?</string>
+    <string name="other_option_response">Something else? Sure. I can help you out with a few things!</string>
+    <string name="other_option_1_response">Trophies are essentially an achievement/reward system.
+        \n\n You can earn trophies for completing various recycling activities.
+        \n\n In the Trophies tab, you can see which ones you\'ve unlocked, and how to get more!
+        \n\n Good luck :)</string>
+    <string name="other_option_2_response">This is a final year project app, so a lot of features have only recently been finished.
+        \n\n Feel free to provide feedback for anything you would like added to the app.</string>
+    <string name="recycle_instruction">You would like to recycle an item, sure thing.
+        \n\n You\'ll need to take a photo of the recycling code on the side of the packaging so I can tell you what to do!
     </string>
+    <string name="try_again">Hmm, looks like that didn\'t work.
+        \n\n Looks like there are some connection issues. Check your internet connection, and let\'s try that again!
+    </string>
+
+    <!-- User options -->
     <string name="recycle_option">Recycle</string>
-    <string name="recycle_instruction">
-        You would like to recycle an item, sure thing. You\'ll need to take a photo of the
-        recycling code on the side of the packaging so I can tell you what to do!
-    </string>
+    <string name="other_option">Something else</string>
+    <string name="other_option_1">What are trophies and how do I earn them?</string>
+    <string name="other_option_2">When is \"x\" feature coming to the app?</string>
     <string name="take_photo">Take Photo</string>
-    <string name="try_again">
-        Hmm, looks like that didn\'t work. Looks like there are some connection issues.
-        Check your internet connection, and let\'s try that again!</string>
 </resources>
