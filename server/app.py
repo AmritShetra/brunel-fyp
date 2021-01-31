@@ -13,13 +13,20 @@ db.init_app(app)
 
 @app.route('/')
 def home():
+    # Returns a list of users in the database.
     response = {
-        "text": "Hello world!"
+        "users": []
     }
-    return jsonify(response)
+    for user in User.query.order_by(User.id).all():
+        user_data = {
+            "id": user.id,
+            "username": user.username
+        }
+        response["users"].append(user_data)
+    return jsonify(response), 200
 
 
-@app.route('/signup/', methods=['POST'])
+@app.route('/register/', methods=['POST'])
 def create_user():
     data = request.json
 
@@ -73,21 +80,58 @@ def get_user():
     username = request.authorization.username
     password = request.authorization.password
 
-    # Checking if the username exists beforehand
+    # Checking if the account exists
     user = User.query.filter_by(username=username).first()
     if not user:
         return "Username not found.", 401
 
+    # If account is found but passwords don't match
+    if not user.password == password:
+        return "Not authenticated, please login again", 401
+
     # If passwords match, send the account's details over
-    if user.password == password:
-        data = {
-                   "first_name": user.first_name,
-                   "last_name": user.last_name,
-                   "email": user.email
-               }
-        return data, 200
-    else:
-        return "Not authenticated, please login again.", 401
+    data = {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email
+    }
+    return data, 200
+
+
+@app.route('/users/edit/', methods=['PUT'])
+def update_user():
+    username = request.authorization.username
+    password = request.authorization.password
+    data = request.json
+
+    # Checking if the account exists
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return "Username not found.", 401
+
+    # If account is found but passwords don't match
+    if not user.password == password:
+        return "Not authenticated, please login again", 401
+
+    # If username is being changed, check if the new one already exists
+    if not user.username == data['username']:
+        if User.query.filter_by(username=data['username']).first():
+            return "Username is taken", 409
+
+    # Same thing with email
+    if not user.email == data['email']:
+        if User.query.filter_by(email=data['email']).first():
+            return "Email is taken", 409
+
+    # Looks like everything is fine, update the fields
+    user.username = data['username']
+    user.password = data['password']
+    user.email = data['email']
+    user.first_name = data['first_name']
+    user.last_name = data['last_name']
+
+    db.session.commit()
+    return "User model updated", 200
 
 
 @app.route('/classify/', methods=['POST'])
