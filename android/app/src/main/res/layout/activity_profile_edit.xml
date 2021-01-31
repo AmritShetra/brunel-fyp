@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileFragment">
+    tools:context=".ProfileEditActivity">
 
     <View
         android:id="@+id/banner"
@@ -16,27 +16,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/logOut"
+        android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/log_out"
+        android:src="@drawable/bin"
         app:layout_constraintEnd_toStartOf="@+id/avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/logout" />
 
     <TextView
-        android:id="@+id/logOutText"
+        android:id="@+id/cancelText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/logout"
-        app:layout_constraintEnd_toEndOf="@+id/logOut"
-        app:layout_constraintStart_toStartOf="@+id/logOut"
-        app:layout_constraintTop_toBottomOf="@+id/logOut" />
+        android:text="@string/cancel"
+        app:layout_constraintEnd_toEndOf="@+id/cancel"
+        app:layout_constraintStart_toStartOf="@+id/cancel"
+        app:layout_constraintTop_toBottomOf="@+id/cancel" />
 
     <ImageView
         android:id="@+id/avatar"
@@ -50,39 +50,43 @@
         app:layout_constraintTop_toTopOf="@+id/banner" />
 
     <ImageView
-        android:id="@+id/editProfile"
+        android:id="@+id/saveChanges"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/edit"
+        android:src="@drawable/save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/edit" />
 
     <TextView
-        android:id="@+id/editText"
+        android:id="@+id/saveChangesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/edit"
-        app:layout_constraintEnd_toEndOf="@+id/editProfile"
-        app:layout_constraintStart_toStartOf="@+id/editProfile"
-        app:layout_constraintTop_toBottomOf="@+id/editProfile" />
+        android:text="@string/save_changes"
+        app:layout_constraintEnd_toEndOf="@+id/saveChanges"
+        app:layout_constraintStart_toStartOf="@+id/saveChanges"
+        app:layout_constraintTop_toBottomOf="@+id/saveChanges" />
 
-    <TextView
+    <EditText
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/username"
-        android:textSize="20sp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:textAlignment="center"
+        android:hint="@string/username"
+        android:importantForAutofill="no"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/avatar" />
+        app:layout_constraintTop_toBottomOf="@+id/avatar"
+        tools:targetApi="o" />
 
     <TableLayout
         android:layout_width="360dp"
@@ -97,7 +101,7 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="match_parent"
             android:padding="10dp">
 
             <ImageView
@@ -122,11 +126,15 @@
                 android:layout_weight="1"
                 android:text="@string/first_name" />
 
-            <TextView
+            <EditText
                 android:id="@+id/firstName"
                 android:layout_weight="1"
-                android:text="@string/first_name"
-                android:textSize="15sp" />
+                android:hint="@string/first_name"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:text=""
+                android:textSize="13sp"
+                tools:targetApi="o" />
         </TableRow>
 
         <TableRow
@@ -138,11 +146,15 @@
                 android:layout_weight="1"
                 android:text="@string/last_name" />
 
-            <TextView
+            <EditText
                 android:id="@+id/lastName"
                 android:layout_weight="1"
-                android:text="@string/last_name"
-                android:textSize="15sp" />
+                android:hint="@string/last_name"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:text=""
+                android:textSize="13sp"
+                tools:targetApi="o" />
         </TableRow>
 
         <TableRow
@@ -154,21 +166,26 @@
                 android:layout_weight="1"
                 android:text="@string/email" />
 
-            <TextView
+            <EditText
                 android:id="@+id/email"
                 android:layout_weight="1"
-                android:text="@string/email"
-                android:textSize="15sp" />
+                android:hint="@string/email"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:text=""
+                android:textSize="13sp"
+                tools:targetApi="o" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="10dp">
 
             <TextView
                 android:layout_weight="1"
                 android:text="@string/password" />
+
             <!-- Column so that both items can overlap in the same space-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -176,13 +193,19 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <TextView
+                <EditText
                     android:id="@+id/password"
                     android:layout_width="0dp"
+                    android:maxWidth="80dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/password"
-                    android:textSize="15sp" />
+                    android:text=""
+                    android:textSize="13sp"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:importantForAutofill="no"
+                    tools:targetApi="o"
+                    tools:ignore="TextFields" />
 
                 <Switch
                     android:id="@+id/passwordSwitch"

@@ -14,5 +14,6 @@ class Server {
     static String loginRoute() { return address + "/login/"; }
     static String registerRoute() { return address + "/register/"; }
     static String profileRoute() { return address + "/users/"; }
+    static String profileEditRoute() { return address + "/users/edit/"; }
     static String chatbotRoute() { return address + "/classify/"; }
 }

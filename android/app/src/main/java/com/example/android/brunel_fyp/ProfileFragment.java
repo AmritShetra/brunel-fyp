@@ -1,7 +1,6 @@
 package com.example.android.brunel_fyp;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -23,20 +22,16 @@ import cz.msebera.android.httpclient.Header;
 
 public class ProfileFragment extends Fragment {
 
-    ImageView logout, edit;
     TextView usernameText, firstNameText, lastNameText, emailText, passwordText;
-    Switch passwordSwitch;
     ProgressBar progressBar;
-    AsyncHttpClient client = new AsyncHttpClient();
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View parentHolder = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        logout = parentHolder.findViewById(R.id.logOut);
-        edit = parentHolder.findViewById(R.id.editProfile);
+        ImageView logout = parentHolder.findViewById(R.id.logOut);
+        ImageView edit = parentHolder.findViewById(R.id.editProfile);
 
         usernameText = parentHolder.findViewById(R.id.username);
         firstNameText = parentHolder.findViewById(R.id.firstName);
@@ -44,7 +39,7 @@ public class ProfileFragment extends Fragment {
         emailText = parentHolder.findViewById(R.id.email);
         passwordText = parentHolder.findViewById(R.id.password);
 
-        passwordSwitch = parentHolder.findViewById(R.id.passwordSwitch);
+        Switch passwordSwitch = parentHolder.findViewById(R.id.passwordSwitch);
 
         progressBar = parentHolder.findViewById(R.id.progressBar);
 
@@ -63,21 +58,24 @@ public class ProfileFragment extends Fragment {
             getActivity().finish();
         });
 
-        // TODO: Edit Profile screen
-        edit.setOnClickListener(view -> System.out.println("--- Edit ---"));
+        // Edit Profile screen
+        edit.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), ProfileEditActivity.class);
+            intent.putExtra("first_name", firstNameText.getText().toString());
+            intent.putExtra("last_name", lastNameText.getText().toString());
+            intent.putExtra("email", emailText.getText().toString());
+            startActivity(intent);
+        });
 
         // Switch between the clear-text password and asterisks version of it
         passwordSwitch.setOnClickListener(view -> {
-            if (password == null) {
+            if (password == null)
                 return;
-            }
 
-            if (passwordSwitch.isChecked()) {
+            if (passwordSwitch.isChecked())
                 passwordText.setText(password);
-            }
-            else {
+            else
                 passwordText.setText(hidePassword(password));
-            }
         });
 
         return parentHolder;
@@ -86,6 +84,7 @@ public class ProfileFragment extends Fragment {
     private void getProfileData(String username, String password) {
         String url = Server.profileRoute();
 
+        AsyncHttpClient client = new AsyncHttpClient();
         client.setBasicAuth(username, password);
         client.get(url, new JsonHttpResponseHandler() {
             @Override
@@ -118,7 +117,7 @@ public class ProfileFragment extends Fragment {
     }
 
     // Convert the password to asterisks
-    private String hidePassword(String password) {
+    public static String hidePassword(String password) {
         StringBuilder asterisks = new StringBuilder();
         for (int i = 0; i < password.length(); i++) {
             asterisks.append("*");

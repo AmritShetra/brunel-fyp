@@ -51,15 +51,17 @@ public class SignUpActivity extends AppCompatActivity {
         lastNameWarning = findViewById(R.id.lastNameWarning);
 
         signUpButton.setOnClickListener(view -> {
-            try {
-                signUp(view);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (validateInputs()) {
+                try {
+                    signUp();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    private void signUp(View view) throws JSONException, UnsupportedEncodingException {
+    private void signUp() throws JSONException, UnsupportedEncodingException {
 
         String username = userField.getText().toString();
         String password = passwordField.getText().toString();
@@ -68,7 +70,7 @@ public class SignUpActivity extends AppCompatActivity {
         String lastName = lastNameField.getText().toString();
 
         // If the inputs are invalid, don't try an API call
-        if (!validateInputs(view)) {
+        if (!validateInputs()) {
             return;
         }
 
@@ -81,7 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
         json.put("last_name", lastName);
         StringEntity entity = new StringEntity(json.toString());
 
-        client.post(view.getContext(), url, entity, "application/json", new TextHttpResponseHandler() {
+        client.post(getApplicationContext(), url, entity, "application/json", new TextHttpResponseHandler() {
             @Override
             public void onStart() {
                 progressBar.setVisibility(View.VISIBLE);
@@ -97,13 +99,15 @@ public class SignUpActivity extends AppCompatActivity {
                     emailWarning.setVisibility(View.VISIBLE);
                 }
 
-                Snackbar.make(view, responseString, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(
+                        findViewById(android.R.id.content), responseString, Snackbar.LENGTH_LONG
+                ).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Intent intent = new Intent(view.getContext(), LoginActivity.class);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -111,7 +115,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    private boolean validateInputs(View view) {
+    public boolean validateInputs() {
         String username = userField.getText().toString();
         String password = passwordField.getText().toString();
         String email = emailField.getText().toString();
@@ -162,7 +166,9 @@ public class SignUpActivity extends AppCompatActivity {
             return true;
         }
         else {
-            Snackbar snackbar = Snackbar.make(view, text, Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(
+                    findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG
+            );
 
             // Snackbar doesn't show all of the error text if it's > 2 lines, so we make it
             View snackbarView = snackbar.getView();

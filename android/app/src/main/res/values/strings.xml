@@ -22,6 +22,9 @@
     <string name="edit">Edit</string>
     <string name="logout">Log Out</string>
 
+    <string name="cancel">Cancel</string>
+    <string name="save_changes">Save Changes</string>
+
     <!-- Chatbot messages -->
     <string name="intro_message">Hi! I\'m Carl the Chatbot, happy to help. Do you have any items to recycle, or do you need help with something else?</string>
     <string name="other_option_response">Something else? Sure. I can help you out with a few things!</string>
