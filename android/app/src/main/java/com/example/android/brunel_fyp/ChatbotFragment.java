@@ -46,6 +46,12 @@ public class ChatbotFragment extends Fragment {
         return parentHolder;
     }
 
+    // Remove all of the message rows from the layout
+    private void clearRows() {
+        LinearLayout ll = scrollView.findViewById(R.id.linearLayout);
+        ll.removeAllViews();
+    }
+
     private void initialiseChatbot() {
         // Show the introduction message from the chatbot to kick things off
         addView(chatbotMessage);
@@ -64,8 +70,17 @@ public class ChatbotFragment extends Fragment {
         );
         flowLayout.addView(otherButton);
 
-        recycleButton.setOnClickListener(view -> showRecycleInstructions());
-        otherButton.setOnClickListener(view -> showOtherOptions());
+        recycleButton.setOnClickListener(view -> {
+            // Clean up the screen (the user might have pressed many buttons and scrolled up to do something else)
+            clearRows();
+            initialiseChatbot();
+            showRecycleInstructions();
+        });
+        otherButton.setOnClickListener(view -> {
+            clearRows();
+            initialiseChatbot();
+            showOtherOptions();
+        });
 
     }
 
