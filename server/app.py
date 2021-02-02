@@ -134,6 +134,31 @@ def update_user():
     return "User model updated", 200
 
 
+@app.route('/trophies/', methods=['GET'])
+def get_trophies():
+    username = request.authorization.username
+    password = request.authorization.password
+
+    # Checking if the account exists
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return "Username not found.", 401
+
+    # If account is found but passwords don't match
+    if not user.password == password:
+        return "Not authenticated, please login again", 401
+
+    # If passwords match, send the account's trophies over
+    trophies = Trophies.query.filter_by(user_id=user.id).first()
+
+    data = {
+        "trophy_one": trophies.trophy_one,
+        "trophy_two": trophies.trophy_two
+    }
+
+    return data, 200
+
+
 @app.route('/classify/', methods=['POST'])
 def process_photo():
     photo = request.files["photo"]
