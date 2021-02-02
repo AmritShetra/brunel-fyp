@@ -48,7 +48,7 @@ public class TrophiesAdapter extends RecyclerView.Adapter<TrophiesAdapter.ViewHo
     // Return number of rows
     @Override
     public int getItemCount() {
-        return trophyNames.size();
+        return trophyStatus.size();
     }
     
     public class ViewHolder extends RecyclerView.ViewHolder {
