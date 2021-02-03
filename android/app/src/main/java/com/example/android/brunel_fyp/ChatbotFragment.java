@@ -2,6 +2,7 @@ package com.example.android.brunel_fyp;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -21,12 +22,19 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ChatbotFragment extends Fragment {
+
+    private String username;
+    private String password;
 
     ScrollView scrollView;
 
@@ -39,6 +47,10 @@ public class ChatbotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View parentHolder = inflater.inflate(R.layout.fragment_chatbot, container, false);
+
+        Context context = getContext();
+        username = User.getUsername(context);
+        password = User.getPassword(context);
 
         scrollView = parentHolder.findViewById(R.id.scrollView);
         initialiseChatbot();
@@ -194,10 +206,6 @@ public class ChatbotFragment extends Fragment {
 
         String url = Server.chatbotRoute();
         RequestParams params = new RequestParams();
-
-        // Get username from SharedPreferences
-        String username = User.getUsername(getActivity());
-
         params.put("photo", new ByteArrayInputStream(img), username + "_app_image.png");
 
         // Make the response view visible - we'll substitute the API reply text there
@@ -226,8 +234,42 @@ public class ChatbotFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 // Show the response in the chatbot message view (once made visible)
                 response.setText(responseString);
+
+                // Unlock a trophy if it's their first time using the chatbot to take a photo
+                tryUnlockTrophy();
+
                 // Let the user take a new photo
                 showUserButton();
+            }
+        });
+    }
+
+    public void tryUnlockTrophy() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setBasicAuth(username, password);
+        String url = Server.trophiesRoute();
+        JSONObject json = new JSONObject();
+        StringEntity entity = null;
+        try {
+            json.put("trophy_name", "trophy_one");
+            entity = new StringEntity(json.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        client.put(getContext(), url, entity,"application/json", new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                // Do nothing, they already have the achievement - return to the chatbot
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                View chatbotResponse = addView(chatbotMessage);
+                TextView response = chatbotResponse.findViewById(R.id.messageText);
+                response.setText(responseString);
+
+                // Return to onSuccess() in sendPhoto() so the user can decide what to do next
             }
         });
     }
