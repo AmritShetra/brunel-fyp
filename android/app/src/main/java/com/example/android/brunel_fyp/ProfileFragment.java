@@ -23,7 +23,9 @@ import cz.msebera.android.httpclient.Header;
 public class ProfileFragment extends Fragment {
 
     TextView usernameText, firstNameText, lastNameText, emailText, passwordText;
+    Switch passwordSwitch;
     ProgressBar progressBar;
+    Boolean canEdit = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class ProfileFragment extends Fragment {
         emailText = parentHolder.findViewById(R.id.email);
         passwordText = parentHolder.findViewById(R.id.password);
 
-        Switch passwordSwitch = parentHolder.findViewById(R.id.passwordSwitch);
+        passwordSwitch = parentHolder.findViewById(R.id.passwordSwitch);
 
         progressBar = parentHolder.findViewById(R.id.progressBar);
 
@@ -60,6 +62,11 @@ public class ProfileFragment extends Fragment {
 
         // Edit Profile screen
         edit.setOnClickListener(view -> {
+            // canEdit is only true once the profile loads and we have the data saved
+            if (!canEdit) {
+                return;
+            }
+
             Intent intent = new Intent(getContext(), ProfileEditActivity.class);
             intent.putExtra("first_name", firstNameText.getText().toString());
             intent.putExtra("last_name", lastNameText.getText().toString());
@@ -111,6 +118,8 @@ public class ProfileFragment extends Fragment {
                 catch (JSONException e) {
                     e.printStackTrace();
                 }
+                canEdit = true;
+                passwordSwitch.setEnabled(true);
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
