@@ -1,3 +1,5 @@
+import numpy as np
+import tensorflow as tf
 import werkzeug
 from flask import Flask, jsonify, request
 from config import Config
@@ -193,7 +195,34 @@ def process_photo():
     photo = request.files["photo"]
     photo_filename = werkzeug.utils.secure_filename(photo.filename)
     photo.save(photo_filename)
-    return "Photo received", 200
+
+    from classifier import img_height, img_width
+    from labels import labels
+
+    model = tf.keras.models.load_model('my_model')
+
+    # Load a new image
+    img = tf.keras.preprocessing.image.load_img(
+        photo_filename, target_size=(img_height, img_width)
+    )
+    # Turn it into an array
+    img_array = tf.keras.preprocessing.image.img_to_array(img)
+    # Create a batch/list to give to the model
+    img_array = tf.expand_dims(img_array, 0)
+
+    # Prediction
+    pred = model.predict(img_array)
+    # Get the value with the highest confidence
+    score = tf.nn.softmax(pred[0])
+
+    # The value is used as an index in our list of classes/labels
+    label = labels[np.argmax(score)]
+    confidence = np.max(score)
+
+    response = "This image is {}% likely to be resin code {}.".format(
+        int(confidence*100), label
+    )
+    return response, 200
 
 
 # Provides access to objects in shell without needing to import manually

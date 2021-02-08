@@ -1,6 +1,6 @@
 Flask==1.1.2
 Flask-SQLAlchemy==2.4.4
-matplotlib-3.3.4
+matplotlib==3.3.4
 tensorflow==2.4.1
 psycopg2==2.8.3
 
