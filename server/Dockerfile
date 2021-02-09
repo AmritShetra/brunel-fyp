@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code/
 COPY requirements.txt \
-     app.py models.py config.py /code/
+     app.py models.py config.py my_model/ /code/
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt

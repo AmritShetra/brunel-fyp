@@ -62,7 +62,6 @@ if __name__ == '__main__':
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(128, activation='relu'),
 
-        #
         tf.keras.layers.Dense(num_classes)
     ])
 

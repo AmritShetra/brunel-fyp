@@ -197,7 +197,7 @@ def process_photo():
     photo.save(photo_filename)
 
     from classifier import img_height, img_width
-    from labels import labels
+    from labels import labels, get_desc
 
     model = tf.keras.models.load_model('my_model')
 
@@ -219,9 +219,15 @@ def process_photo():
     label = labels[np.argmax(score)]
     confidence = np.max(score)
 
-    response = "This image is {}% likely to be resin code {}.".format(
-        int(confidence*100), label
-    )
+    sentence = "This image is {}% likely to be resin code {}.".format(
+        int(confidence * 100), label)
+    desc = get_desc(label)
+
+    response = {
+        "sentence": sentence,
+        "desc": desc
+    }
+
     return response, 200
 
 
