@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.json.JSONException;
@@ -62,20 +63,27 @@ public class LoginActivity extends AppCompatActivity {
         json.put("password", password);
         StringEntity entity = new StringEntity(json.toString());
 
-        client.post(view.getContext(), url, entity, "application/json", new TextHttpResponseHandler() {
+        client.post(view.getContext(), url, entity, "application/json", new JsonHttpResponseHandler() {
             @Override
             public void onStart(){
                 progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Snackbar.make(view, responseString, Snackbar.LENGTH_LONG).show();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+                if (response.has("result")) {
+                    try {
+                        String responseString = response.getString("result");
+                        Snackbar.make(view, responseString, Snackbar.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // Saving user details to the device's shared preferences
                 User.setDetails(getApplicationContext(), username, password);
 

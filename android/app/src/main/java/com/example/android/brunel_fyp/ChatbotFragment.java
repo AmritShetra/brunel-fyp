@@ -222,13 +222,8 @@ public class ChatbotFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString == null) {
-                    responseMessage.setText(R.string.try_again);
-                }
-                else {
-                    responseMessage.setText(responseString);
-                }
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+                responseMessage.setText(R.string.try_again);
                 showUserButton();
             }
 
