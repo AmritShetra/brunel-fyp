@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -210,30 +211,45 @@ public class ChatbotFragment extends Fragment {
 
         // Make the response view visible - we'll substitute the API reply text there
         View chatbotResponse = addView(chatbotMessage);
-        TextView response = chatbotResponse.findViewById(R.id.messageText);
+        TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.post(url, params, new TextHttpResponseHandler(){
+        client.post(url, params, new JsonHttpResponseHandler(){
             @Override
             public void onStart(){
-                response.setText(". . .");
+                // This is a placeholder to say that the chatbot is "typing"
+                responseMessage.setText(". . .");
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 if (responseString == null) {
-                    response.setText(R.string.try_again);
+                    responseMessage.setText(R.string.try_again);
                 }
                 else {
-                    response.setText(responseString);
+                    responseMessage.setText(responseString);
                 }
                 showUserButton();
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                // Show the response in the chatbot message view (once made visible)
-                response.setText(responseString);
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                try {
+                    // This is the identification of the resin code
+                    responseMessage.setText(
+                            response.getString("sentence")
+                    );
+
+                    // And we also need another message for the description of the resin code
+                    View chatbotResponse = addView(chatbotMessage);
+                    TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
+                    responseMessage.setText(
+                            response.getString("desc")
+                    );
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 // Unlock a trophy if it's their first time using the chatbot to take a photo
                 tryUnlockTrophy();
