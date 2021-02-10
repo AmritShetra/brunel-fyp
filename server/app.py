@@ -39,7 +39,8 @@ def create_user():
         response['username'] = "Username already exists."
     if User.query.filter_by(email=data["email"]).first():
         response['email'] = "Email already exists."
-    if 'username' or 'email' in response:
+    if response:
+        print(response)
         return response, 409
 
     # If not, add the user to the database
@@ -70,15 +71,19 @@ def create_user():
 def login():
     data = request.json
 
+    response = {}
     # Checking if the username exists beforehand
     user = User.query.filter_by(username=data["username"]).first()
     if not user:
-        return "Username not found.", 401
+        response['result'] = "Username not found."
+        return response, 401
 
     if user.password == data['password']:
-        return "Authenticated.", 200
+        response['result'] = "Authenticated."
+        return response, 200
     else:
-        return "Please check your login details and try again.", 401
+        response['result'] = "Please check your login details and try again."
+        return response, 401
 
 
 @app.route('/users/', methods=['GET'])
