@@ -25,7 +25,8 @@ def home():
             "username": user.username
         }
         response["users"].append(user_data)
-    return jsonify(response), 200
+
+    return response, 200
 
 
 @app.route('/register/', methods=['POST'])
@@ -33,12 +34,12 @@ def create_user():
     data = request.json
 
     # Check if the username/email are taken
-    response = ""
+    response = {}
     if User.query.filter_by(username=data["username"]).first():
-        response += "Username already exists."
+        response['username'] = "Username already exists."
     if User.query.filter_by(email=data["email"]).first():
-        response += "Email already exists."
-    if not response == "":
+        response['email'] = "Email already exists."
+    if 'username' or 'email' in response:
         return response, 409
 
     # If not, add the user to the database
@@ -58,8 +59,11 @@ def create_user():
     )
     db.session.add(trophies)
 
+    # Save to the database
     db.session.commit()
-    return user.username + " added to database.", 200
+    response['result'] = "{} added to database.".format(user.username)
+
+    return response, 200
 
 
 @app.route('/login/', methods=['POST'])
