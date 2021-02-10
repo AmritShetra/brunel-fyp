@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.json.JSONException;
@@ -83,25 +84,22 @@ public class SignUpActivity extends AppCompatActivity {
         json.put("last_name", lastName);
         StringEntity entity = new StringEntity(json.toString());
 
-        client.post(getApplicationContext(), url, entity, "application/json", new TextHttpResponseHandler() {
+        client.post(getApplicationContext(), url, entity, "application/json", new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                if (responseString.contains("Username")) {
-                    userWarning.setVisibility(View.VISIBLE);
-                }
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
 
-                if (responseString.contains("Email")) {
-                    emailWarning.setVisibility(View.VISIBLE);
-                }
+                // Check if response's keys contains "Username" or "Email" and display warning
+                if (response.has("username")) userWarning.setVisibility(View.VISIBLE);
 
-                Snackbar.make(
-                        findViewById(android.R.id.content), responseString, Snackbar.LENGTH_LONG
-                ).show();
+                if (response.has("email")) emailWarning.setVisibility(View.VISIBLE);
+
+                View thisView = findViewById(android.R.id.content);
+                Snackbar.make(thisView, R.string.sign_up_error, Snackbar.LENGTH_LONG).show();
                 progressBar.setVisibility(View.INVISIBLE);
             }
 

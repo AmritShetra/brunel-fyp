@@ -12,6 +12,7 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="warning">Warning</string>
+    <string name="sign_up_error">Username/Email already in use. Please pick a different one!</string>
 
     <string name="trophies">Trophies</string>
     <string name="chatbot">Chatbot</string>
