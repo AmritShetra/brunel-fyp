@@ -219,9 +219,16 @@ def process_photo():
     label = labels[np.argmax(score)]
     confidence = np.max(score)
 
-    sentence = "This image is {}% likely to be resin code {}.".format(
-        int(confidence * 100), label)
+    sentence = "I've taken a quick look. \n" + \
+               "This image is {}% likely to be resin code {}.".format(
+                   int(confidence * 100), label
+               )
     desc = get_desc(label)
+
+    # And just throw away the image
+    tf.io.gfile.remove(
+        photo_filename
+    )
 
     response = {
         "sentence": sentence,

@@ -8,15 +8,16 @@ labels = [
     "7"
 ]
 
-one = """Can be put in the recycle bin, as long as it is emptied and rinsed."""
-two = """Can be put in the recycle bin, but flimsy plastics (e.g. carrier bags)
-        can be recycled in your local supermarket."""
-three = """Not recyclable in normal conditions. Check any plastic lumber makers
-        or local waste management."""
-four = """Can be recycled in some councils. Plastic bags can be recycled in
-        local supermarkets."""
-five = """Can be put in the recycle bin, but loose caps can thrown away in the
-        rubbish."""
+one = """The item can be put in the recycling bin.
+Just make sure to empty and rinse it first (if necessary)."""
+two = """The item can be put in the recycling bin. Although...
+Flimsy plastics (such as carrier bags) can be recycled in the supermarket."""
+three = """Not recyclable in normal conditions.
+Check any plastic lumber makers or local waste management."""
+four = """These items can be recycled in some councils...
+Plastic bags can be recycled in local supermarkets."""
+five = """The item can be put in the recycle bin.
+Just throw away any loose caps in the rubbish bin."""
 six = """Not recyclable in normal conditions, throw it away."""
 seven = """Not recyclable, probably best to throw it away."""
 
