@@ -40,7 +40,6 @@ def create_user():
     if User.query.filter_by(email=data["email"]).first():
         response['email'] = "Email already exists."
     if response:
-        print(response)
         return response, 409
 
     # If not, add the user to the database
@@ -91,14 +90,18 @@ def get_user():
     username = request.authorization.username
     password = request.authorization.password
 
+    response = {}
+
     # Checking if the account exists
     user = User.query.filter_by(username=username).first()
     if not user:
-        return "Username not found.", 401
+        response['error'] = "Username not found."
+        return response, 401
 
     # If account is found but passwords don't match
     if not user.password == password:
-        return "Not authenticated, please login again", 401
+        response['error'] = "Not authenticated, please login again."
+        return response, 401
 
     # If passwords match, send the account's details over
     data = {
@@ -115,24 +118,30 @@ def update_user():
     password = request.authorization.password
     data = request.json
 
+    response = {}
+
     # Checking if the account exists
     user = User.query.filter_by(username=username).first()
     if not user:
-        return "Username not found.", 401
+        response['error'] = "Username not found."
+        return response, 401
 
     # If account is found but passwords don't match
     if not user.password == password:
-        return "Not authenticated, please login again", 401
+        response['error'] = "Not authenticated, please login again."
+        return response, 401
 
     # If username is being changed, check if the new one already exists
     if not user.username == data['username']:
         if User.query.filter_by(username=data['username']).first():
-            return "Username is taken", 409
+            response['error'] = "Username is taken."
+            return response, 409
 
     # Same thing with email
     if not user.email == data['email']:
         if User.query.filter_by(email=data['email']).first():
-            return "Email is taken", 409
+            response['error'] = "Email is taken."
+            return response, 409
 
     # Looks like everything is fine, update the fields
     user.username = data['username']
@@ -142,7 +151,8 @@ def update_user():
     user.last_name = data['last_name']
 
     db.session.commit()
-    return "User model updated", 200
+    response['result'] = "User model updated."
+    return response, 200
 
 
 @app.route('/trophies/', methods=['GET'])
@@ -150,14 +160,18 @@ def get_trophies():
     username = request.authorization.username
     password = request.authorization.password
 
+    response = {}
+
     # Checking if the account exists
     user = User.query.filter_by(username=username).first()
     if not user:
-        return "Username not found.", 401
+        response['error'] = "Username not found."
+        return response, 401
 
     # If account is found but passwords don't match
     if not user.password == password:
-        return "Not authenticated, please login again", 401
+        response['error'] = "Not authenticated, please login again."
+        return response, 401
 
     # If passwords match, send the account's trophies over
     trophies = Trophies.query.filter_by(user_id=user.id).first()
@@ -175,28 +189,34 @@ def update_trophies():
     username = request.authorization.username
     password = request.authorization.password
 
+    response = {}
+
     # Checking if the account exists
     user = User.query.filter_by(username=username).first()
     if not user:
-        return "Username not found.", 401
+        response['error'] = "Username not found."
+        return response, 401
 
     # If account is found but passwords don't match
     if not user.password == password:
-        return "Not authenticated, please login again", 401
+        response['error'] = "Not authenticated, please login in."
+        return response, 401
 
     # If passwords match, we can check if the given trophy is already unlocked
     data = request.json
     key = data['trophy_name']
     trophies = Trophies.query.filter_by(user_id=user.id).first()
-    # https://stackoverflow.com/a/54985920
-    if getattr(trophies, key):
-        return "Trophy is already unlocked", 304
+    if getattr(trophies, key):  # https://stackoverflow.com/a/54985920
+        response['error'] = "Trophy is already unlocked."
+        return response, 304
 
     # "Unlock" the trophy if necessary
     # https://stackoverflow.com/questions/23152337/how-to-update-sqlalchemy-orm-object-by-a-python-dict
     setattr(trophies, key, True)
     db.session.commit()
-    return "You've unlocked an achievement - well done!", 200
+
+    response['result'] = "You've unlocked an achievement - well done!"
+    return response, 200
 
 
 @app.route('/classify/', methods=['POST'])
