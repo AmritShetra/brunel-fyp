@@ -268,18 +268,24 @@ public class ChatbotFragment extends Fragment {
             e.printStackTrace();
         }
 
-        client.put(getContext(), url, entity,"application/json", new TextHttpResponseHandler() {
+        client.put(getContext(), url, entity,"application/json", new JsonHttpResponseHandler() {
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
                 // Do nothing, they already have the achievement - return to the chatbot
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                View chatbotResponse = addView(chatbotMessage);
-                TextView response = chatbotResponse.findViewById(R.id.messageText);
-                response.setText(responseString);
-
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if (response.has("result")) {
+                    try {
+                        String responseString = response.getString("result");
+                        View chatbotResponse = addView(chatbotMessage);
+                        TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
+                        responseMessage.setText(responseString);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 // Return to onSuccess() in sendPhoto() so the user can decide what to do next
             }
         });

@@ -100,9 +100,16 @@ public class ProfileFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                View content = getActivity().findViewById(android.R.id.content);
-                Snackbar.make(content, responseString, Snackbar.LENGTH_LONG).show();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+                if (response.has("error")) {
+                    try {
+                        String responseString = response.getString("error");
+                        View thisView = getActivity().findViewById(android.R.id.content);
+                        Snackbar.make(thisView, responseString, Snackbar.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 progressBar.setVisibility(View.INVISIBLE);
             }
 

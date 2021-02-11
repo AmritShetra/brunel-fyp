@@ -14,7 +14,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.TextHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -154,22 +154,28 @@ public class ProfileEditActivity extends AppCompatActivity {
         String storedPassword = User.getPassword(getApplicationContext());
         AsyncHttpClient client = new AsyncHttpClient();
         client.setBasicAuth(storedUsername, storedPassword);
-        client.put(getApplicationContext(), url, entity, "application/json", new TextHttpResponseHandler() {
+        client.put(getApplicationContext(), url, entity, "application/json", new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 progressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Snackbar.make(
-                        findViewById(android.R.id.content), responseString, Snackbar.LENGTH_LONG
-                ).show();
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+                if (response.has("error")) {
+                    try {
+                        String responseString = response.getString("error");
+                        View thisView = findViewById(android.R.id.content);
+                        Snackbar.make(thisView, responseString, Snackbar.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // Update the User object
                 User.setDetails(
                         getApplicationContext(),
