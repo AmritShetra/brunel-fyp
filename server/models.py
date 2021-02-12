@@ -20,8 +20,3 @@ class Trophies(db.Model):
     trophy_one = db.Column(db.Boolean, nullable=False, default=False)
     trophy_two = db.Column(db.Boolean, nullable=False, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey(User.id))
-
-
-class MachineLearning(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    model = db.Column(db.PickleType, unique=True, nullable=False)

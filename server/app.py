@@ -274,7 +274,6 @@ def make_shell_context():
         'db': db,
         'User': User,
         'Trophies': Trophies,
-        'MachineLearning': MachineLearning
     }
 
 
