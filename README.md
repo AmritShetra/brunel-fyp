@@ -25,14 +25,17 @@ SERVER_ADDRESS=127.0.0.1
 docker exec -it api /bin/bash
 flask shell 
 ```
-* You can then run database queries, like below, where a new User instance is stored in the table. The first and last lines are used to illustrate the changes made.
+* You can then run database queries, like below, where we look at all User instances in the database (followed by an example of filtering).
 ```
 User.query.all()
-db.session.add(User(username="Amrit"))
-db.session.commit()
-User.query.all()
+user = User.query.filter_by(username='Amrit').one()
+```
+* A set of tests can be run in the container:
+```
+python tests.py
 ```
 
 ### Notes
 * [dotenv-java](https://github.com/cdimascio/dotenv-java) used to load environment variables in Android Studio.
 * [android-async-http](https://loopj.com/android-async-http/) used for API calls.
+* [Flask-Testing](https://pythonhosted.org/Flask-Testing/) used for API tests.

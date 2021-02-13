@@ -3,7 +3,7 @@ import tensorflow as tf
 import werkzeug
 from flask import Flask, jsonify, request
 from config import Config
-from models import db, User, Trophies, MachineLearning
+from models import db, User, Trophies
 
 app = Flask(__name__)
 app.config.from_object(Config)
