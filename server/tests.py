@@ -48,7 +48,7 @@ class TestViews(BaseTest):
         user = User.query.filter_by(username="AmritShetra").first()
         self.assertEqual(user.username, "AmritShetra")
 
-    def test_register(self):
+    def test_create_user(self):
         data = {
             "username": "AmritShetra",
             "password": "itsasecret",
@@ -74,6 +74,27 @@ class TestViews(BaseTest):
         # Make sure there's a new User in the database
         new_user = User.query.filter_by(username='Amrit').one()
         self.assertEqual(new_user.username, 'Amrit')
+
+    def test_login(self):
+        data = {
+            "username": "NotAValidUsername",
+            "password": "itsasecret",
+        }
+        response = self.client.post("/login/", json=data)
+
+        # An invalid username should return 401
+        self.assert401(response)
+
+        # Swap to a valid username, but this time, use the wrong password
+        data['username'] = "AmritShetra"
+        data['password'] = "notavalidpassword"
+        response = self.client.post("/login/", json=data)
+        self.assert401(response)
+
+        # And finally, use the correct password
+        data['password'] = "itsasecret"
+        response = self.client.post("/login/", json=data)
+        self.assert200(response)
 
 
 if __name__ == '__main__':
