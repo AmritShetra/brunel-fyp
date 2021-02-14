@@ -66,18 +66,15 @@ def create_user():
     return response, 200
 
 
-@app.route('/login/', methods=['POST'])
-def login():
-    data = request.json
-
+def check_credentials(username, password):
     response = {}
     # Checking if the username exists beforehand
-    user = User.query.filter_by(username=data["username"]).first()
+    user = User.query.filter_by(username=username).first()
     if not user:
         response['result'] = "Username not found."
         return response, 401
 
-    if user.password == data['password']:
+    if user.password == password:
         response['result'] = "Authenticated."
         return response, 200
     else:
@@ -85,24 +82,27 @@ def login():
         return response, 401
 
 
+@app.route('/login/', methods=['POST'])
+def login():
+    data = request.json
+
+    return check_credentials(
+        data['username'],
+        data['password']
+    )
+
+
 @app.route('/users/', methods=['GET'])
 def get_user():
     username = request.authorization.username
     password = request.authorization.password
 
-    response = {}
+    response, status = check_credentials(username, password)
 
-    # Checking if the account exists
+    if status == 401:
+        return response, status
+
     user = User.query.filter_by(username=username).first()
-    if not user:
-        response['error'] = "Username not found."
-        return response, 401
-
-    # If account is found but passwords don't match
-    if not user.password == password:
-        response['error'] = "Not authenticated, please login again."
-        return response, 401
-
     # If passwords match, send the account's details over
     data = {
         "first_name": user.first_name,
@@ -118,19 +118,12 @@ def update_user():
     password = request.authorization.password
     data = request.json
 
-    response = {}
+    response, status = check_credentials(username, password)
 
-    # Checking if the account exists
+    if status == 401:
+        return response, status
+
     user = User.query.filter_by(username=username).first()
-    if not user:
-        response['error'] = "Username not found."
-        return response, 401
-
-    # If account is found but passwords don't match
-    if not user.password == password:
-        response['error'] = "Not authenticated, please login again."
-        return response, 401
-
     # If username is being changed, check if the new one already exists
     if not user.username == data['username']:
         if User.query.filter_by(username=data['username']).first():
@@ -160,20 +153,13 @@ def get_trophies():
     username = request.authorization.username
     password = request.authorization.password
 
-    response = {}
+    response, status = check_credentials(username, password)
 
-    # Checking if the account exists
+    if status == 401:
+        return response, status
+
     user = User.query.filter_by(username=username).first()
-    if not user:
-        response['error'] = "Username not found."
-        return response, 401
-
-    # If account is found but passwords don't match
-    if not user.password == password:
-        response['error'] = "Not authenticated, please login again."
-        return response, 401
-
-    # If passwords match, send the account's trophies over
+    # Send the account's trophies over
     trophies = Trophies.query.filter_by(user_id=user.id).first()
 
     data = {
@@ -189,20 +175,14 @@ def update_trophies():
     username = request.authorization.username
     password = request.authorization.password
 
-    response = {}
+    response, status = check_credentials(username, password)
 
-    # Checking if the account exists
+    if status == 401:
+        return response, status
+
     user = User.query.filter_by(username=username).first()
-    if not user:
-        response['error'] = "Username not found."
-        return response, 401
 
-    # If account is found but passwords don't match
-    if not user.password == password:
-        response['error'] = "Not authenticated, please login in."
-        return response, 401
-
-    # If passwords match, we can check if the given trophy is already unlocked
+    # Check if the given trophy is already "unlocked"
     data = request.json
     key = data['trophy_name']
     trophies = Trophies.query.filter_by(user_id=user.id).first()
