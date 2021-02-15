@@ -1,11 +1,11 @@
 labels = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7"
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
 ]
 
 one = """The item can be put in the recycling bin.
@@ -36,5 +36,4 @@ def get_desc(label):
     """
     Returns an item from the descriptions list, depending on the label (e.g. 3)
     """
-    label = int(label)
     return descriptions[label]

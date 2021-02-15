@@ -1,3 +1,4 @@
+import base64
 import flask_testing
 import unittest
 
@@ -24,11 +25,11 @@ class BaseTest(flask_testing.TestCase):
         db.create_all()
 
         user = User(
-            username="AmritShetra",
-            password="itsasecret",
-            email="my.email@provider.net",
-            first_name="Amrit",
-            last_name="Shetra"
+            username="valid_username",
+            password="valid_password",
+            email="valid_email@email.com",
+            first_name="valid_first_name",
+            last_name="valid_last_name"
         )
 
         db.session.add(user)
@@ -45,16 +46,17 @@ class TestViews(BaseTest):
         response = self.client.get("/")
         self.assert200(response)
 
-        user = User.query.filter_by(username="AmritShetra").first()
-        self.assertEqual(user.username, "AmritShetra")
+        user = User.query.filter_by(username="valid_username").first()
+        self.assertEqual(user.username, "valid_username")
 
     def test_create_user(self):
+        # Pass data identical to the test user's account
         data = {
-            "username": "AmritShetra",
-            "password": "itsasecret",
-            "email": "my.email@provider.net",
-            "first_name": "Amrit",
-            "last_name": "Shetra"
+            "username": "valid_username",
+            "password": "valid_password",
+            "email": "valid_email@email.com",
+            "first_name": "valid_first_name",
+            "last_name": "valid_last_name"
         }
         response = self.client.post("/register/", json=data)
 
@@ -67,7 +69,7 @@ class TestViews(BaseTest):
         self.assert_status(response, 409)
 
         # Change the email too
-        data['email'] = 'adifferentemail@provider.net'
+        data['email'] = 'adifferentemail@email.com'
         response = self.client.post("/register/", json=data)
         self.assert_status(response, 200)
 
@@ -77,23 +79,36 @@ class TestViews(BaseTest):
 
     def test_login(self):
         data = {
-            "username": "NotAValidUsername",
-            "password": "itsasecret",
+            "username": "invalid_username",
+            "password": "valid_password",
         }
         response = self.client.post("/login/", json=data)
 
-        # An invalid username should return 401
+        # An invalid username (i.e. 'not found') should return 401
         self.assert401(response)
 
         # Swap to a valid username, but this time, use the wrong password
-        data['username'] = "AmritShetra"
-        data['password'] = "notavalidpassword"
+        data['username'] = "valid_username"
+        data['password'] = "invalid_password"
         response = self.client.post("/login/", json=data)
         self.assert401(response)
 
         # And finally, use the correct password
-        data['password'] = "itsasecret"
+        data['password'] = "valid_password"
         response = self.client.post("/login/", json=data)
+        self.assert200(response)
+
+    def test_get_user(self):
+        # If credentials match, user data should be returned
+        # No need to check invalid credentials, login route covers it
+
+        # https://stackoverflow.com/a/30250045
+        credentials = base64.b64encode(b"valid_username:valid_password")\
+            .decode('utf-8')
+        response = self.client.get(
+            "/users/", headers={"Authorization": f"Basic {credentials}"}
+        )
+
         self.assert200(response)
 
 
