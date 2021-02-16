@@ -111,6 +111,47 @@ class TestViews(BaseTest):
 
         self.assert200(response)
 
+    def test_update_user(self):
+        # Make another account so we can test username/email clashes
+        new_user = User(
+            username='new_username',
+            password='new_password',
+            email='new_email',
+            first_name='new_first_name',
+            last_name='new_last_name'
+        )
+        db.session.add(new_user)
+
+        # The form sent by the app, only field being updated is username
+        data = {
+            "username": "new_username",
+            "password": "valid_password",
+            "email": "valid_email",
+            "first_name": "valid_first_name",
+            "last_name": "valid_last_name"
+        }
+        credentials = base64.b64encode(b"valid_username:valid_password") \
+            .decode('utf-8')
+        response = self.client.put(
+            "/users/edit/",
+            json=data,
+            headers={"Authorization": f"Basic {credentials}"}
+        )
+
+        # Username belongs to the newly created user, so it raises a 409 error
+        self.assertStatus(response, 409)
+
+        # Same logic as email, so move on
+        # Test if it works with valid input
+        data['username'] = "a_new_username"
+        response = self.client.put(
+            "/users/edit/",
+            json=data,
+            headers={"Authorization": f"Basic {credentials}"}
+        )
+
+        self.assert200(response)
+
 
 if __name__ == '__main__':
     unittest.main()
