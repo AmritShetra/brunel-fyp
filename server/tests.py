@@ -3,7 +3,7 @@ import flask_testing
 import unittest
 
 from app import app, db
-from models import User
+from models import User, Trophies
 
 
 class BaseTest(flask_testing.TestCase):
@@ -31,8 +31,14 @@ class BaseTest(flask_testing.TestCase):
             first_name="valid_first_name",
             last_name="valid_last_name"
         )
-
         db.session.add(user)
+
+        user_id = User.query.filter_by(username=user.username).one().id
+        trophies = Trophies(
+            user_id=user_id
+        )
+        db.session.add(trophies)
+
         db.session.commit()
 
     def tearDown(self):
@@ -151,6 +157,21 @@ class TestViews(BaseTest):
         )
 
         self.assert200(response)
+
+    def test_get_trophies(self):
+        credentials = base64.b64encode(b"valid_username:valid_password") \
+            .decode('utf-8')
+        response = self.client.get(
+            "/trophies/",
+            headers={"Authorization": f"Basic {credentials}"}
+        )
+
+        # Should return JSON with trophies being locked/false
+        self.assert200(response)
+        self.assertEqual(response.json, {
+            "trophy_one": False,
+            "trophy_two": False
+        })
 
 
 if __name__ == '__main__':
