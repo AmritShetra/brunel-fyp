@@ -173,6 +173,31 @@ class TestViews(BaseTest):
             "trophy_two": False
         })
 
+    def test_update_trophies(self):
+        data = {
+            "trophy_name": "trophy_one"
+        }
+
+        credentials = base64.b64encode(b"valid_username:valid_password") \
+            .decode('utf-8')
+        response = self.client.put(
+            "/trophies/",
+            json=data,
+            headers={"Authorization": f"Basic {credentials}"}
+        )
+
+        self.assert200(response)
+        self.assertTrue(Trophies.query.filter_by(user_id=1).one().trophy_one)
+
+        # Try it again
+        response = self.client.put(
+            "/trophies/",
+            json=data,
+            headers={"Authorization": f"Basic {credentials}"}
+        )
+        # Should raise 304 error as trophy has already been unlocked
+        self.assertStatus(response, 304)
+
 
 if __name__ == '__main__':
     unittest.main()
