@@ -2,6 +2,8 @@ import base64
 import flask_testing
 import unittest
 
+from werkzeug.datastructures import FileStorage
+
 from app import app, db
 from models import User, Trophies
 
@@ -197,6 +199,31 @@ class TestViews(BaseTest):
         )
         # Should raise 304 error as trophy has already been unlocked
         self.assertStatus(response, 304)
+
+    def test_process_photo(self):
+        image = "images/1/1_image_one.png"
+        image_file = FileStorage(
+            stream=open(image, "rb"),
+            filename="testing_image.png",
+            content_type="image/png"
+        )
+        data = {
+            "photo": image_file
+        }
+
+        response = self.client.post(
+            "/classify/",
+            data=data
+        )
+        self.assert200(response)
+
+        # Check if the response has the correct prediction
+        # response_data = response.get_json()
+        # print(response_data)
+        # correct_answer = False
+        # if "1" in response_data['sentence']:
+        #     correct_answer = True
+        # self.assertTrue(correct_answer)
 
 
 if __name__ == '__main__':
