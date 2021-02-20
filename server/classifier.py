@@ -3,13 +3,14 @@ import matplotlib.pyplot as plt
 
 # Parameters for loading images
 batch_size = 32
-img_height = 100
-img_width = 100
+img_height = 200
+img_width = 200
 
 if __name__ == '__main__':
     # Training dataset - 75%
     train_ds = tf.keras.preprocessing.image_dataset_from_directory(
         'images/',
+        color_mode='grayscale',
         validation_split=0.25,
         subset="training",
         seed=123,
@@ -20,6 +21,7 @@ if __name__ == '__main__':
     # Validation dataset - 25% split
     val_ds = tf.keras.preprocessing.image_dataset_from_directory(
         "images/",
+        color_mode='grayscale',
         validation_split=0.25,
         subset="validation",
         seed=123,
@@ -50,14 +52,15 @@ if __name__ == '__main__':
     # Create the CNN
     model = tf.keras.Sequential([
         normalisation_layer,
-        tf.keras.layers.Conv2D(32, 3, activation='relu'),
+        tf.keras.layers.Conv2D(16, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
 
-        tf.keras.layers.Conv2D(32, 3, activation='relu'),
+        tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
 
-        tf.keras.layers.Conv2D(32, 3, activation='relu'),
+        tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Dropout(0.2),
 
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(128, activation='relu'),
@@ -75,7 +78,7 @@ if __name__ == '__main__':
     model.fit(
         train_ds,
         validation_data=val_ds,
-        epochs=10
+        epochs=30
     )
 
     # Get accuracy

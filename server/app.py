@@ -212,7 +212,9 @@ def process_photo():
 
     # Load a new image
     img = tf.keras.preprocessing.image.load_img(
-        photo_filename, target_size=(img_height, img_width)
+        photo_filename,
+        color_mode='grayscale',
+        target_size=(img_height, img_width)
     )
     # Turn it into an array
     img_array = tf.keras.preprocessing.image.img_to_array(img)
