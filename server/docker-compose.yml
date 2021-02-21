@@ -12,6 +12,7 @@ services:
     server:
         container_name: api
         build: .
+        command: bash -c "python classifier.py && python app.py"
         ports:
             - "0.0.0.0:5000:5000"
         environment: *env

@@ -9,11 +9,9 @@ COPY requirements.txt \
      models.py \
      config.py \
      classifier.py \
-     my_model/ \
      tests.py /code/
+
+COPY images /code/images/
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-
-CMD python app.py
-
