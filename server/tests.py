@@ -221,7 +221,7 @@ class TestViews(BaseTest):
         # response_data = response.get_json()
         # print(response_data)
         # correct_answer = False
-        # if "1" in response_data['sentence']:
+        # if "1" in response_data['sentence'].split():
         #     correct_answer = True
         # self.assertTrue(correct_answer)
 
