@@ -85,6 +85,10 @@ class TestViews(BaseTest):
         new_user = User.query.filter_by(username='Amrit').one()
         self.assertEqual(new_user.username, 'Amrit')
 
+        # Check that the Trophies object has been created
+        trophies = Trophies.query.filter_by(user_id=1).one()
+        self.assertEqual(trophies.user_id, 1)
+
     def test_login(self):
         data = {
             "username": "invalid_username",
