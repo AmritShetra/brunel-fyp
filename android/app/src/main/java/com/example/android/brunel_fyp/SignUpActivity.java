@@ -14,36 +14,29 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.TextHttpResponseHandler;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    EditText userField, passwordField, emailField, firstNameField, lastNameField;
     ImageView userWarning, passwordWarning, emailWarning, firstNameWarning, lastNameWarning;
-    Button signUpButton;
-    ProgressBar progressBar;
-    AsyncHttpClient client = new AsyncHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        userField = findViewById(R.id.username);
-        passwordField = findViewById(R.id.password);
-        emailField = findViewById(R.id.email);
-        firstNameField = findViewById(R.id.firstName);
-        lastNameField = findViewById(R.id.lastName);
-        signUpButton = findViewById(R.id.signUp);
-        progressBar = findViewById(R.id.progressBar);
+        EditText userField = findViewById(R.id.username);
+        EditText passwordField = findViewById(R.id.password);
+        EditText emailField = findViewById(R.id.email);
+        EditText firstNameField = findViewById(R.id.firstName);
+        EditText lastNameField = findViewById(R.id.lastName);
 
         userWarning = findViewById(R.id.userWarning);
         passwordWarning = findViewById(R.id.passwordWarning);
@@ -51,10 +44,18 @@ public class SignUpActivity extends AppCompatActivity {
         firstNameWarning = findViewById(R.id.firstNameWarning);
         lastNameWarning = findViewById(R.id.lastNameWarning);
 
+        Button signUpButton = findViewById(R.id.signUp);
         signUpButton.setOnClickListener(view -> {
-            if (validateInputs()) {
+            HashMap<String, String> details = new HashMap<>();
+            details.put("username", userField.getText().toString());
+            details.put("password", passwordField.getText().toString());
+            details.put("email", emailField.getText().toString());
+            details.put("first_name", firstNameField.getText().toString());
+            details.put("last_name", lastNameField.getText().toString());
+
+            if (validateInputs(details)) {
                 try {
-                    signUp();
+                    signUp(details);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -62,64 +63,8 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    private void signUp() throws JSONException, UnsupportedEncodingException {
 
-        String username = userField.getText().toString();
-        String password = passwordField.getText().toString();
-        String email = emailField.getText().toString();
-        String firstName = firstNameField.getText().toString();
-        String lastName = lastNameField.getText().toString();
-
-        // If the inputs are invalid, don't try an API call
-        if (!validateInputs()) {
-            return;
-        }
-
-        String url = Server.registerRoute();
-        JSONObject json = new JSONObject();
-        json.put("username", username);
-        json.put("password", password);
-        json.put("email", email);
-        json.put("first_name", firstName);
-        json.put("last_name", lastName);
-        StringEntity entity = new StringEntity(json.toString());
-
-        client.post(getApplicationContext(), url, entity, "application/json", new JsonHttpResponseHandler() {
-            @Override
-            public void onStart() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-
-                // Check if response's keys contains "Username" or "Email" and display warning
-                if (response.has("username")) userWarning.setVisibility(View.VISIBLE);
-
-                if (response.has("email")) emailWarning.setVisibility(View.VISIBLE);
-
-                View thisView = findViewById(android.R.id.content);
-                Snackbar.make(thisView, R.string.sign_up_error, Snackbar.LENGTH_LONG).show();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-    }
-
-    public boolean validateInputs() {
-        String username = userField.getText().toString();
-        String password = passwordField.getText().toString();
-        String email = emailField.getText().toString();
-        String firstName = firstNameField.getText().toString();
-        String lastName = lastNameField.getText().toString();
-
+    public boolean validateInputs(HashMap<String, String> details) {
         // Make sure the warning icons are invisible before checking the new inputs
         userWarning.setVisibility(View.INVISIBLE);
         passwordWarning.setVisibility(View.INVISIBLE);
@@ -130,30 +75,35 @@ public class SignUpActivity extends AppCompatActivity {
         boolean valid = true;
         String text = "";
 
-        if (!username.matches("[A-za-z0-9]+")) {
+        String username = details.get("username");
+        if (!username.matches("[A-Za-z0-9_]+")) {
             text += "Username must be alphanumeric characters only. \n";
             userWarning.setVisibility(View.VISIBLE);
             valid = false;
         }
 
+        String password = details.get("password");
         if (password.length() < 6) {
             text += "Password must be greater than 6 characters. \n";
             passwordWarning.setVisibility(View.VISIBLE);
             valid = false;
         }
 
+        String email = details.get("email");
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             text += "Email is not valid. \n";
             emailWarning.setVisibility(View.VISIBLE);
             valid = false;
         }
 
+        String firstName = details.get("first_name");
         if (firstName.isEmpty()) {
             text += "First name is empty. \n";
             firstNameWarning.setVisibility(View.VISIBLE);
             valid = false;
         }
 
+        String lastName = details.get("last_name");
         if (lastName.isEmpty()) {
             text += "Last name is empty.";
             lastNameWarning.setVisibility(View.VISIBLE);
@@ -164,16 +114,56 @@ public class SignUpActivity extends AppCompatActivity {
             return true;
         }
         else {
-            Snackbar snackbar = Snackbar.make(
-                    findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG
-            );
-
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG);
             // Snackbar doesn't show all of the error text if it's > 2 lines, so we make it
             View snackbarView = snackbar.getView();
             TextView snackbarText = snackbarView.findViewById(R.id.snackbar_text);
             snackbarText.setMaxLines(5);
             snackbar.show();
+
             return false;
         }
+    }
+
+    private void signUp(HashMap<String, String> details) throws UnsupportedEncodingException {
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+
+        JSONObject json = new JSONObject(details);
+        StringEntity entity = new StringEntity(json.toString());
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = Server.registerRoute();
+        client.post(getApplicationContext(), url, entity, "application/json", new JsonHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
+                try {
+                    if (response.has("username")) {
+                        userWarning.setVisibility(View.VISIBLE);
+                    }
+                    if (response.has("email")) {
+                        emailWarning.setVisibility(View.VISIBLE);
+                    }
+                    View thisView = findViewById(android.R.id.content);
+                    Snackbar.make(thisView, R.string.sign_up_error, Snackbar.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 }
