@@ -69,7 +69,7 @@ def create_user():
 
     # Save to the database
     db.session.commit()
-    response['result'] = "{} added to database.".format(user.username)
+    response['message'] = "{} added to database.".format(user.username)
 
     return response, 200
 
@@ -166,7 +166,7 @@ def update_trophies():
     if getattr(trophies, key):
         response['message'] = "Trophy is already unlocked"
         return response, 304
-
+    
     # Unlock the trophy
     setattr(trophies, key, True)
     db.session.commit()
