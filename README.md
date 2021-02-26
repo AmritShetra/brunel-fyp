@@ -38,4 +38,5 @@ python tests.py
 ### Notes
 * [dotenv-java](https://github.com/cdimascio/dotenv-java) used to load environment variables in Android Studio.
 * [android-async-http](https://loopj.com/android-async-http/) used for API calls.
+* [Flask-JWT-Extended](https://flask-jwt-extended.readthedocs.io/en/stable/) used for API token-based authentication.
 * [Flask-Testing](https://pythonhosted.org/Flask-Testing/) used for API tests.
