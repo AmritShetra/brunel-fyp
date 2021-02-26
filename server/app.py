@@ -143,53 +143,35 @@ def update_user():
 
 
 @app.route('/trophies/', methods=['GET'])
+@jwt_required()
 def get_trophies():
-    username = request.authorization.username
-    password = request.authorization.password
-
-    response, status = check_credentials(username, password)
-
-    if status == 401:
-        return response, status
-
-    user = User.query.filter_by(username=username).first()
-    # Send the account's trophies over
-    trophies = Trophies.query.filter_by(user_id=user.id).first()
-
-    data = {
+    current_user = get_jwt_identity()
+    trophies = Trophies.query.filter_by(user_id=current_user).first()
+    response = {
         "trophy_one": trophies.trophy_one,
         "trophy_two": trophies.trophy_two
     }
-
-    return data, 200
+    return response, 200
 
 
 @app.route('/trophies/', methods=['PUT'])
+@jwt_required()
 def update_trophies():
-    username = request.authorization.username
-    password = request.authorization.password
+    current_user = get_jwt_identity()
+    response = {}
 
-    response, status = check_credentials(username, password)
-
-    if status == 401:
-        return response, status
-
-    user = User.query.filter_by(username=username).first()
-
-    # Check if the given trophy is already "unlocked"
     data = request.json
     key = data['trophy_name']
-    trophies = Trophies.query.filter_by(user_id=user.id).first()
-    if getattr(trophies, key):  # https://stackoverflow.com/a/54985920
-        response['error'] = "Trophy is already unlocked."
+    trophies = Trophies.query.filter_by(user_id=current_user).first()
+    if getattr(trophies, key):
+        response['message'] = "Trophy is already unlocked"
         return response, 304
 
-    # "Unlock" the trophy if necessary
-    # https://stackoverflow.com/questions/23152337/how-to-update-sqlalchemy-orm-object-by-a-python-dict
+    # Unlock the trophy
     setattr(trophies, key, True)
     db.session.commit()
+    response['message'] = "You've unlocked an achievement - well done!"
 
-    response['result'] = "You've unlocked an achievement - well done!"
     return response, 200
 
 
