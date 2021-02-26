@@ -87,7 +87,7 @@ def login():
         return response, 401
 
     if password == user.password:
-        response['access_token'] = create_access_token(identity=username)
+        response['access_token'] = create_access_token(identity=user.id)
         return response
     else:
         response['message'] = "Please check your login details and try again."
@@ -98,51 +98,39 @@ def login():
 @jwt_required()
 def get_user():
     current_user = get_jwt_identity()
-    return current_user, 200
-
-    username = request.authorization.username
-    password = request.authorization.password
-
-    response, status = check_credentials(username, password)
-
-    if status == 401:
-        return response, status
-
-    user = User.query.filter_by(username=username).first()
-    # If passwords match, send the account's details over
-    data = {
+    user = User.query.filter_by(id=current_user).first()
+    response = {
+        "username": user.username,
+        "password": user.password,
+        "email": user.email,
         "first_name": user.first_name,
-        "last_name": user.last_name,
-        "email": user.email
+        "last_name": user.last_name
     }
-    return data, 200
+    return response, 200
 
 
 @app.route('/users/edit/', methods=['PUT'])
+@jwt_required()
 def update_user():
-    username = request.authorization.username
-    password = request.authorization.password
+    current_user = get_jwt_identity()
     data = request.json
 
-    response, status = check_credentials(username, password)
+    response = {}
 
-    if status == 401:
-        return response, status
+    user = User.query.filter_by(id=current_user).first()
 
-    user = User.query.filter_by(username=username).first()
-    # If username is being changed, check if the new one already exists
+    # If username is being changed, see if the new one already exists
     if not user.username == data['username']:
         if User.query.filter_by(username=data['username']).first():
-            response['error'] = "Username is taken."
+            response['message'] = "Username is taken."
             return response, 409
 
     # Same thing with email
     if not user.email == data['email']:
         if User.query.filter_by(email=data['email']).first():
-            response['error'] = "Email is taken."
+            response['message'] = "Email is taken."
             return response, 409
 
-    # Looks like everything is fine, update the fields
     user.username = data['username']
     user.password = data['password']
     user.email = data['email']
@@ -150,7 +138,7 @@ def update_user():
     user.last_name = data['last_name']
 
     db.session.commit()
-    response['result'] = "User model updated."
+    response['message'] = "Changes saved."
     return response, 200
 
 
