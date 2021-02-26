@@ -74,31 +74,24 @@ def create_user():
     return response, 200
 
 
-def check_credentials(username, password):
-    response = {}
-    # Checking if the username exists beforehand
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        response['result'] = "Username not found."
-        return response, 401
-
-    if user.password == password:
-        response['result'] = "Authenticated."
-        return response, 200
-    else:
-        response['result'] = "Please check your login details and try again."
-        return response, 401
-
-
 @app.route('/login/', methods=['POST'])
 def login():
-    data = request.json
+    username = request.json.get("username")
+    password = request.json.get("password")
 
-    if check_credentials(data['username'], data['password']):
-        access_token = create_access_token(identity=data['username'])
-        return {
-            "access_token": access_token
-        }
+    response = {}
+
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        response['message'] = "Username not found."
+        return response, 401
+
+    if password == user.password:
+        response['access_token'] = create_access_token(identity=username)
+        return response
+    else:
+        response['message'] = "Please check your login details and try again."
+        return response, 401
 
 
 @app.route('/users/', methods=['GET'])
