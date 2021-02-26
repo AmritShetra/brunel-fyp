@@ -1,12 +1,20 @@
 import numpy as np
 import tensorflow as tf
 import werkzeug
-from flask import Flask, jsonify, request
+
+from flask import Flask, request
+
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+
 from config import Config
 from models import db, User, Trophies
 
 app = Flask(__name__)
 app.config.from_object(Config)
+jwt = JWTManager(app)
 
 # Specify which app we are using with SQLAlchemy
 app.app_context().push()
@@ -86,14 +94,19 @@ def check_credentials(username, password):
 def login():
     data = request.json
 
-    return check_credentials(
-        data['username'],
-        data['password']
-    )
+    if check_credentials(data['username'], data['password']):
+        access_token = create_access_token(identity=data['username'])
+        return {
+            "access_token": access_token
+        }
 
 
 @app.route('/users/', methods=['GET'])
+@jwt_required()
 def get_user():
+    current_user = get_jwt_identity()
+    return current_user, 200
+
     username = request.authorization.username
     password = request.authorization.password
 
