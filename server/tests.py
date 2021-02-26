@@ -90,13 +90,12 @@ class TestViews(BaseTest):
         self.assertEqual(trophies.user_id, 1)
 
     def test_login(self):
+        # An invalid username (i.e. 'not found') should return 401
         data = {
             "username": "invalid_username",
             "password": "valid_password",
         }
         response = self.client.post("/login/", json=data)
-
-        # An invalid username (i.e. 'not found') should return 401
         self.assert401(response)
 
         # Swap to a valid username, but this time, use the wrong password
@@ -111,19 +110,30 @@ class TestViews(BaseTest):
         self.assert200(response)
 
     def test_get_user(self):
-        # If credentials match, user data should be returned
-        # No need to check invalid credentials, login route covers it
+        data = {
+            'username': 'valid_username',
+            'password': 'valid_password'
+        }
+        response = self.client.post("/login/", json=data)
+        token = response.json['access_token']
 
-        # https://stackoverflow.com/a/30250045
-        credentials = base64.b64encode(b"valid_username:valid_password")\
-            .decode('utf-8')
-        response = self.client.get(
-            "/users/", headers={"Authorization": f"Basic {credentials}"}
-        )
-
+        headers = {
+            'Authorization': 'Bearer {}'.format(token)
+        }
+        response = self.client.get("/users/", headers=headers)
         self.assert200(response)
 
     def test_update_user(self):
+        data = {
+            'username': 'valid_username',
+            'password': 'valid_password'
+        }
+        response = self.client.post("/login/", json=data)
+        token = response.json['access_token']
+        headers = {
+            'Authorization': 'Bearer {}'.format(token)
+        }
+
         # Make another account so we can test username/email clashes
         new_user = User(
             username='new_username',
@@ -134,7 +144,7 @@ class TestViews(BaseTest):
         )
         db.session.add(new_user)
 
-        # The form sent by the app, only field being updated is username
+        # Send a request to update username (which is taken, so returns 409)
         data = {
             "username": "new_username",
             "password": "valid_password",
@@ -142,66 +152,54 @@ class TestViews(BaseTest):
             "first_name": "valid_first_name",
             "last_name": "valid_last_name"
         }
-        credentials = base64.b64encode(b"valid_username:valid_password") \
-            .decode('utf-8')
-        response = self.client.put(
-            "/users/edit/",
-            json=data,
-            headers={"Authorization": f"Basic {credentials}"}
-        )
-
-        # Username belongs to the newly created user, so it raises a 409 error
+        response = self.client.put("/users/edit/", json=data, headers=headers)
         self.assertStatus(response, 409)
 
-        # Same logic as email, so move on
-        # Test if it works with valid input
+        # Same logic as email, so move on and test if it works with valid input
         data['username'] = "a_new_username"
-        response = self.client.put(
-            "/users/edit/",
-            json=data,
-            headers={"Authorization": f"Basic {credentials}"}
-        )
-
+        response = self.client.put("/users/edit/", json=data, headers=headers)
         self.assert200(response)
 
     def test_get_trophies(self):
-        credentials = base64.b64encode(b"valid_username:valid_password") \
-            .decode('utf-8')
-        response = self.client.get(
-            "/trophies/",
-            headers={"Authorization": f"Basic {credentials}"}
-        )
+        data = {
+            'username': 'valid_username',
+            'password': 'valid_password'
+        }
+        response = self.client.post("/login/", json=data)
+        token = response.json['access_token']
+        headers = {
+            'Authorization': 'Bearer {}'.format(token)
+        }
 
-        # Should return JSON with trophies being locked/false
+        response = self.client.get("/trophies/", headers=headers)
+
+        # Should return JSON with trophies being locked
         self.assert200(response)
-        self.assertEqual(response.json, {
-            "trophy_one": False,
-            "trophy_two": False
-        })
+        self.assertEqual(
+            response.json,
+            {"trophy_one": False, "trophy_two": False}
+        )
 
     def test_update_trophies(self):
         data = {
-            "trophy_name": "trophy_one"
+            'username': 'valid_username',
+            'password': 'valid_password'
+        }
+        response = self.client.post("/login/", json=data)
+        token = response.json['access_token']
+        headers = {
+            'Authorization': 'Bearer {}'.format(token)
         }
 
-        credentials = base64.b64encode(b"valid_username:valid_password") \
-            .decode('utf-8')
-        response = self.client.put(
-            "/trophies/",
-            json=data,
-            headers={"Authorization": f"Basic {credentials}"}
-        )
-
+        data = {
+            "trophy_name": "trophy_one"
+        }
+        response = self.client.put("/trophies/", json=data, headers=headers)
         self.assert200(response)
         self.assertTrue(Trophies.query.filter_by(user_id=1).one().trophy_one)
 
-        # Try it again
-        response = self.client.put(
-            "/trophies/",
-            json=data,
-            headers={"Authorization": f"Basic {credentials}"}
-        )
-        # Should raise 304 error as trophy has already been unlocked
+        # Try it again - should raise 304 error as trophy is already unlocked
+        response = self.client.put("/trophies/", json=data, headers=headers)
         self.assertStatus(response, 304)
 
     def test_process_photo(self):
