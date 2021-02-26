@@ -37,14 +37,15 @@ public class ProfileEditActivity extends AppCompatActivity {
         EditText lastNameField = findViewById(R.id.lastName);
         EditText emailField = findViewById(R.id.email);
 
-        // Load profile data that was retrieved from the API in the previous screen
-        usernameField.setText(User.getUsername(getApplicationContext()));
-        passwordField.setText(User.getPassword(getApplicationContext()));
-        // Data was passed when making a new Intent, as we left the Profile screen
+        // Load profile data passed from previous Intent
         Bundle extras = getIntent().getExtras();
-        firstNameField.setText(extras.getString("first_name"));
-        lastNameField.setText(extras.getString("last_name"));
-        emailField.setText(extras.getString("email"));
+        if (extras != null) {
+            usernameField.setText(extras.getString("username"));
+            passwordField.setText(extras.getString("password"));
+            emailField.setText(extras.getString("email"));
+            firstNameField.setText(extras.getString("first_name"));
+            lastNameField.setText(extras.getString("last_name"));
+        }
 
         ImageView cancel = findViewById(R.id.cancel);
         cancel.setOnClickListener(view -> finish());
@@ -134,12 +135,9 @@ public class ProfileEditActivity extends AppCompatActivity {
         JSONObject json = new JSONObject(details);
         StringEntity entity = new StringEntity(json.toString());
 
-        // Have to auth with API using our old username/password
-        String storedUsername = User.getUsername(getApplicationContext());
-        String storedPassword = User.getPassword(getApplicationContext());
-
         AsyncHttpClient client = new AsyncHttpClient();
-        client.setBasicAuth(storedUsername, storedPassword);
+        String token = User.retrieveToken(getApplicationContext());
+        client.addHeader("Authorization", "Bearer " + token);
 
         String url = Server.profileEditRoute();
         client.put(getApplicationContext(), url, entity, "application/json", new JsonHttpResponseHandler() {
@@ -151,7 +149,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
                 try {
-                    String responseString = response.getString("error");
+                    String responseString = response.getString("message");
                     View thisView = findViewById(android.R.id.content);
                     Snackbar.make(thisView, responseString, Snackbar.LENGTH_LONG).show();
                 } catch (Exception e) {
@@ -162,13 +160,6 @@ public class ProfileEditActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // Update the User object
-                User.setDetails(
-                        getApplicationContext(),
-                        details.get("username"),
-                        details.get("password")
-                );
-                
                 // Go back to MainActivity (as Profile is the default fragment) and reload profile data
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);

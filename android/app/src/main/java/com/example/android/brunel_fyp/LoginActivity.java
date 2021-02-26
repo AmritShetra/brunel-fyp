@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        
+
         EditText userField = findViewById(R.id.username);
         EditText passwordField = findViewById(R.id.password);
 
@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
                 try {
-                    String responseString = response.getString("result");
+                    String responseString = response.getString("message");
                     Snackbar.make(findViewById(android.R.id.content), responseString, Snackbar.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -77,8 +77,12 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                // Saving user details to the device's shared preferences
-                User.setDetails(getApplicationContext(), username, password);
+                // Save token to device's shared preferences
+                try {
+                    User.storeToken(response.getString("access_token"), getApplicationContext());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 // Take the user to the main screen (which contains the fragments)
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);

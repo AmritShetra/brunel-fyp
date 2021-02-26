@@ -13,8 +13,8 @@ public class TitleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_title);
 
         // If the user is logged in, skip this activity completely
-        if ( User.loggedInCheck(this) ) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        if (User.hasToken(this)) {
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }

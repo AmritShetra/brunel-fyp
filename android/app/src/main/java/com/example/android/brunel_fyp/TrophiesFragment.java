@@ -1,7 +1,6 @@
 package com.example.android.brunel_fyp;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,14 +14,12 @@ import android.widget.ProgressBar;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -61,15 +58,11 @@ public class TrophiesFragment extends Fragment {
     }
 
     private void getTrophiesData() {
-        Context context = getContext();
-        String username = User.getUsername(context);
-        String password = User.getPassword(context);
-
         AsyncHttpClient client = new AsyncHttpClient();
-        client.setBasicAuth(username, password);
+        String token = User.retrieveToken(getContext());
+        client.addHeader("Authorization", "Bearer " + token);
 
         String url = Server.trophiesRoute();
-
         client.get(url, new JsonHttpResponseHandler(){
             @Override
             public void onStart(){
@@ -78,15 +71,8 @@ public class TrophiesFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
-                if (response.has("error")) {
-                    try {
-                        String responseString = response.getString("error");
-                        View thisView = getActivity().findViewById(android.R.id.content);
-                        Snackbar.make(thisView, responseString, Snackbar.LENGTH_LONG).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                View thisView = getActivity().findViewById(android.R.id.content);
+                Snackbar.make(thisView, R.string.try_again_api, Snackbar.LENGTH_LONG).show();
             }
 
             @Override

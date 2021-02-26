@@ -5,6 +5,32 @@ import android.content.SharedPreferences;
 
 class User {
 
+    static void storeToken(String token, Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("access_token", token);
+        editor.apply();
+    }
+
+    static String retrieveToken(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        return sharedPref.getString("access_token", "");
+    }
+
+    static void clearToken(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    static boolean hasToken(Context context) {
+        System.out.println("Token --->" + retrieveToken(context));
+        SharedPreferences sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        return sharedPref.contains("access_token");
+    }
+
+    /*
     // https://stackoverflow.com/questions/29047777/android-using-shared-preferences-in-separate-class
     // SharedPreferences requires a context
     // In Activity, pass "this" or "getApplicationContext()" as a parameter
@@ -40,4 +66,5 @@ class User {
         editor.clear();
         editor.apply();
     }
+    */
 }

@@ -21,7 +21,6 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,9 +32,7 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ChatbotFragment extends Fragment {
-
-    private String username;
-    private String password;
+    Context context;
 
     ScrollView scrollView;
 
@@ -49,9 +46,7 @@ public class ChatbotFragment extends Fragment {
         // Inflate the layout for this fragment
         View parentHolder = inflater.inflate(R.layout.fragment_chatbot, container, false);
 
-        Context context = getContext();
-        username = User.getUsername(context);
-        password = User.getPassword(context);
+        context = getContext();
 
         scrollView = parentHolder.findViewById(R.id.scrollView);
         initialiseChatbot();
@@ -207,7 +202,7 @@ public class ChatbotFragment extends Fragment {
 
         String url = Server.chatbotRoute();
         RequestParams params = new RequestParams();
-        params.put("photo", new ByteArrayInputStream(img), username + "_app_image.png");
+        params.put("photo", new ByteArrayInputStream(img), "app_image.png");
 
         // Make the response view visible - we'll substitute the API reply text there
         View chatbotResponse = addView(chatbotMessage);
@@ -257,8 +252,9 @@ public class ChatbotFragment extends Fragment {
 
     public void tryUnlockTrophy() {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.setBasicAuth(username, password);
-        String url = Server.trophiesRoute();
+        String token = User.retrieveToken(context);
+        client.addHeader("Authorization", "Bearer " + token);
+
         JSONObject json = new JSONObject();
         StringEntity entity = null;
         try {
@@ -268,7 +264,8 @@ public class ChatbotFragment extends Fragment {
             e.printStackTrace();
         }
 
-        client.put(getContext(), url, entity,"application/json", new JsonHttpResponseHandler() {
+        String url = Server.trophiesRoute();
+        client.put(context, url, entity,"application/json", new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
                 // Do nothing, they already have the achievement - return to the chatbot
@@ -276,15 +273,13 @@ public class ChatbotFragment extends Fragment {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                if (response.has("result")) {
-                    try {
-                        String responseString = response.getString("result");
-                        View chatbotResponse = addView(chatbotMessage);
-                        TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
-                        responseMessage.setText(responseString);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    String responseString = response.getString("message");
+                    View chatbotResponse = addView(chatbotMessage);
+                    TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
+                    responseMessage.setText(responseString);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 // Return to onSuccess() in sendPhoto() so the user can decide what to do next
             }

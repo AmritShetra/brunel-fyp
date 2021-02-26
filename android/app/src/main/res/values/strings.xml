@@ -17,6 +17,7 @@
     <string name="trophies">Trophies</string>
     <string name="chatbot">Chatbot</string>
     <string name="profile">Profile</string>
+    <string name="try_again_api">Check your internet connection and tap the menu button again - or sign out and sign in again.</string>
 
     <string name="avatar">Avatar</string>
     <string name="details">Details</string>
