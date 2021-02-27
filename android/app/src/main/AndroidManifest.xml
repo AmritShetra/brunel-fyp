@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ProfileEditActivity"></activity>
+
         <activity
             android:name=".TitleActivity"
             android:screenOrientation="portrait"
@@ -28,17 +28,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:parentActivityName=".TitleActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".SignUpActivity"
             android:parentActivityName=".TitleActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ProfileEditActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="preloaded_fonts"
