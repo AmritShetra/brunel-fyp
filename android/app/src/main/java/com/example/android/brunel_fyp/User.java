@@ -5,7 +5,11 @@ import android.content.SharedPreferences;
 
 class User {
 
-    static void storeToken(String token, Context context) {
+    // SharedPreferences requires a context
+    // In Activity, you can pass "getApplicationContext()"
+    // In Fragment, you can pass "getActivity()" or "getContext()"
+
+    static void storeToken(Context context, String token) {
         SharedPreferences sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("access_token", token);
@@ -25,46 +29,7 @@ class User {
     }
 
     static boolean hasToken(Context context) {
-        System.out.println("Token --->" + retrieveToken(context));
         SharedPreferences sharedPref = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         return sharedPref.contains("access_token");
     }
-
-    /*
-    // https://stackoverflow.com/questions/29047777/android-using-shared-preferences-in-separate-class
-    // SharedPreferences requires a context
-    // In Activity, pass "this" or "getApplicationContext()" as a parameter
-    // In Fragment, pass "getActivity" as a parameter
-
-    static boolean loggedInCheck(Context context){
-        SharedPreferences user = context.getSharedPreferences("User", 0);
-        return user.contains("username");
-    }
-
-    static void setDetails(Context context, String username, String password) {
-        SharedPreferences user = context.getSharedPreferences("User", 0);
-        SharedPreferences.Editor editor = user.edit();
-        editor.putString("username", username);
-        editor.putString("password", password);
-        editor.apply();
-    }
-
-    static String getUsername(Context context) {
-        SharedPreferences user = context.getSharedPreferences("User", 0);
-        return user.getString("username","");
-    }
-
-    static String getPassword(Context context) {
-        SharedPreferences user = context.getSharedPreferences("User", 0);
-        return user.getString("password", "");
-    }
-
-    // Logout and remove details from SharedPreferences
-    static void clear(Context context) {
-        SharedPreferences user = context.getSharedPreferences("User", 0);
-        SharedPreferences.Editor editor = user.edit();
-        editor.clear();
-        editor.apply();
-    }
-    */
 }

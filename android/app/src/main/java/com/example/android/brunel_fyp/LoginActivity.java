@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 // Save token to device's shared preferences
                 try {
-                    User.storeToken(response.getString("access_token"), getApplicationContext());
+                    User.storeToken(getApplicationContext(), response.getString("access_token"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
