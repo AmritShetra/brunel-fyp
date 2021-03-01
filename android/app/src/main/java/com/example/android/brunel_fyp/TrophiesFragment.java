@@ -25,15 +25,18 @@ import cz.msebera.android.httpclient.Header;
 
 public class TrophiesFragment extends Fragment {
 
-    // https://stackoverflow.com/questions/40584424/simple-android-recyclerview-example
-    // https://www.youtube.com/watch?v=Vyqz_-sJGFk
-
     private ArrayList<Boolean> statuses = new ArrayList<>();
     private ArrayList<String> names = new ArrayList<>(
-            Arrays.asList("Trophy 1", "Trophy 2")
+            Arrays.asList(
+                    "Trophy 1",
+                    "Trophy 2"
+            )
     );
     private ArrayList<String> labels = new ArrayList<>(
-            Arrays.asList("Uploaded a photo on the chatbot for the first time.", "Accessed the app once a day for an entire month.")
+            Arrays.asList(
+                    "Uploaded a photo on the chatbot for the first time.",
+                    "Accessed the app once a day for an entire month."
+            )
     );
 
     RecyclerView recyclerView;
