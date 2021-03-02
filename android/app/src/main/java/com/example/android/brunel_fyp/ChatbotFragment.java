@@ -34,7 +34,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 public class ChatbotFragment extends Fragment {
     Context context;
 
-    ScrollView scrollView;
+    LinearLayout linearLayout;
 
     int chatbotMessage = R.layout.chatbot_message;
     int userMessage = R.layout.user_message;
@@ -45,127 +45,109 @@ public class ChatbotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View parentHolder = inflater.inflate(R.layout.fragment_chatbot, container, false);
-
         context = getContext();
 
-        scrollView = parentHolder.findViewById(R.id.scrollView);
+        ScrollView scrollView = parentHolder.findViewById(R.id.scrollView);
+        linearLayout = scrollView.findViewById(R.id.linearLayout);
         initialiseChatbot();
 
         return parentHolder;
     }
 
-    // Remove all of the message rows from the layout
-    private void clearRows() {
-        LinearLayout ll = scrollView.findViewById(R.id.linearLayout);
-        ll.removeAllViews();
-    }
-
+    // Display introduction message from chatbot + user's options to reply
     private void initialiseChatbot() {
-        // Show the introduction message from the chatbot to kick things off
-        addView(chatbotMessage);
+        addMessageTemplate(chatbotMessage);
 
-        // Add the user message to the screen, show the two buttons
-        View userOptions = addView(userMessage);
-        FlexboxLayout flowLayout = userOptions.findViewById(R.id.buttonContainer);
+        View userRow = addMessageTemplate(userMessage);
+        FlexboxLayout flowLayout = userRow.findViewById(R.id.buttonContainer);
 
-        Button recycleButton = createButton(
-                getString(R.string.recycle_option)
-        );
+        Button recycleButton = createButton(getString(R.string.recycle_option));
+        Button otherButton = createButton(getString(R.string.other_option));
         flowLayout.addView(recycleButton);
-
-        Button otherButton = createButton(
-                getString(R.string.other_option)
-        );
         flowLayout.addView(otherButton);
 
         recycleButton.setOnClickListener(view -> {
-            // Clean up the screen (the user might have pressed many buttons and scrolled up to do something else)
-            clearRows();
-            initialiseChatbot();
+            resetLayout();
             showRecycleInstructions();
+            showTakePhotoButton();
         });
         otherButton.setOnClickListener(view -> {
-            clearRows();
-            initialiseChatbot();
+            resetLayout();
             showOtherOptions();
         });
-
     }
 
-    // Add the message view to the linear layout and scroll down
-    private View addView (int viewLayout){
-        LinearLayout linearLayout = scrollView.findViewById(R.id.linearLayout);
+    // Inflates a new user/chatbot message template
+    private View addMessageTemplate (int viewLayout){
         View newView = getLayoutInflater().inflate(viewLayout, linearLayout, false);
         linearLayout.addView(newView);
-        scrollView.post(() -> scrollView.fullScroll(ScrollView.FOCUS_DOWN));
+        scrollToBottom();
         return newView;
     }
 
-    // Create buttons that the user can press
+    private void scrollToBottom() {
+        ScrollView scrollView = (ScrollView) linearLayout.getParent();
+        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+    }
+
+    // Clean up the screen (user might have pressed many buttons and scrolled up to select a new option)
+    private void resetLayout() {
+        linearLayout.removeAllViews();
+        initialiseChatbot();
+    }
+
     private Button createButton(String text) {
         Button button = new Button(getContext());
         button.setText(text);
         button.setBackgroundResource(R.drawable.user_message_shape);
-        button.setPadding(30, -0, 30, -0);
         button.setAllCaps(false);
         return button;
     }
 
-    // Shows dialogue, followed by two choices for the user
+    private void showRecycleInstructions() {
+        View chatbotResponse = addMessageTemplate(chatbotMessage);
+        TextView chatbotMessage = chatbotResponse.findViewById(R.id.messageText);
+        chatbotMessage.setText(R.string.recycle_instruction);
+    }
+
+    private void showTakePhotoButton() {
+        View userResponse = addMessageTemplate(userMessage);
+        FlexboxLayout flowLayout = userResponse.findViewById(R.id.buttonContainer);
+
+        Button photoButton = createButton(getString(R.string.take_photo));
+        flowLayout.addView(photoButton);
+
+        photoButton.setOnClickListener(view -> launchCamera());
+    }
+
+    // Currently two options for the user
     private void showOtherOptions() {
-        View chatbotResponse = addView(chatbotMessage);
+        View chatbotResponse = addMessageTemplate(chatbotMessage);
         TextView chatbotMessage = chatbotResponse.findViewById(R.id.messageText);
         chatbotMessage.setText(R.string.other_option_response);
 
-        View userOptions = addView(userMessage);
-        FlexboxLayout flowLayout = userOptions.findViewById(R.id.buttonContainer);
+        View userRow = addMessageTemplate(userMessage);
+        FlexboxLayout flowLayout = userRow.findViewById(R.id.buttonContainer);
 
-        Button optionOneButton = createButton(
-                getString(R.string.other_option_1)
-        );
+        Button optionOneButton = createButton(getString(R.string.other_option_1));
+        Button optionTwoButton = createButton(getString(R.string.other_option_2));
+
         flowLayout.addView(optionOneButton);
-
-        Button optionTwoButton = createButton(
-                getString(R.string.other_option_2)
-        );
         flowLayout.addView(optionTwoButton);
 
         optionOneButton.setOnClickListener(view -> optionResponse(1));
         optionTwoButton.setOnClickListener(view -> optionResponse(2));
-
     }
 
-    // Depending on option, return a response from the chatbot
+    // Set chatbot's reply depending on user's option
     private void optionResponse(int option) {
-        View chatbotResponse = addView(chatbotMessage);
+        View chatbotResponse = addMessageTemplate(chatbotMessage);
         TextView chatbotMessage = chatbotResponse.findViewById(R.id.messageText);
 
         if (option == 1)
             chatbotMessage.setText(R.string.other_option_1_response);
         else
             chatbotMessage.setText(R.string.other_option_2_response);
-    }
-
-    // If the user wants to recycle an item, show them appropriate dialogue + a choice
-    private void showRecycleInstructions() {
-        View chatbotResponse = addView(chatbotMessage);
-        TextView chatbotMessage = chatbotResponse.findViewById(R.id.messageText);
-        chatbotMessage.setText(R.string.recycle_instruction);
-
-        showUserButton();
-    }
-
-    // Display the user's "take photo" button
-    private void showUserButton() {
-        View userResponse = addView(userMessage);
-        FlexboxLayout flowLayout = userResponse.findViewById(R.id.buttonContainer);
-
-        Button photoButton = createButton(
-                getString(R.string.take_photo)
-        );
-        flowLayout.addView(photoButton);
-
-        photoButton.setOnClickListener(view -> launchCamera());
     }
 
     private void launchCamera() {
@@ -179,12 +161,11 @@ public class ChatbotFragment extends Fragment {
             // Get the photo
             Bitmap photo = (Bitmap) data.getExtras().get("data");
 
-            // Display the photo in
+            // Display the photo in user message
             ImageView imageView = new ImageView(getContext());
             imageView.setImageBitmap(photo);
-
-            View userResponse = addView(userMessage);
-            FlexboxLayout flowLayout = userResponse.findViewById(R.id.buttonContainer);
+            View userRow = addMessageTemplate(userMessage);
+            FlexboxLayout flowLayout = userRow.findViewById(R.id.buttonContainer);
             flowLayout.addView(imageView);
 
             sendPhoto(photo);
@@ -205,7 +186,7 @@ public class ChatbotFragment extends Fragment {
         params.put("photo", new ByteArrayInputStream(img), "app_image.png");
 
         // Make the response view visible - we'll substitute the API reply text there
-        View chatbotResponse = addView(chatbotMessage);
+        View chatbotResponse = addMessageTemplate(chatbotMessage);
         TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
 
         AsyncHttpClient client = new AsyncHttpClient();
@@ -219,33 +200,24 @@ public class ChatbotFragment extends Fragment {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject response) {
                 responseMessage.setText(R.string.try_again);
-                showUserButton();
+                showTakePhotoButton();
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
                 try {
-                    // This is the identification of the resin code
-                    responseMessage.setText(
-                            response.getString("sentence")
-                    );
-
-                    // And we also need another message for the description of the resin code
-                    View chatbotResponse = addView(chatbotMessage);
+                    // Identification of resin code
+                    responseMessage.setText(response.getString("sentence"));
+                    // Create another message - description of resin code
+                    View chatbotResponse = addMessageTemplate(chatbotMessage);
                     TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
-                    responseMessage.setText(
-                            response.getString("desc")
-                    );
+                    responseMessage.setText(response.getString("desc"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
                 // Unlock a trophy if it's their first time using the chatbot to take a photo
                 tryUnlockTrophy();
-
-                // Let the user take a new photo
-                showUserButton();
+                showTakePhotoButton();
             }
         });
     }
@@ -275,7 +247,7 @@ public class ChatbotFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     String responseString = response.getString("message");
-                    View chatbotResponse = addView(chatbotMessage);
+                    View chatbotResponse = addMessageTemplate(chatbotMessage);
                     TextView responseMessage = chatbotResponse.findViewById(R.id.messageText);
                     responseMessage.setText(responseString);
                 } catch (Exception e) {
