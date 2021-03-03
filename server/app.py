@@ -9,8 +9,11 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
+from classifier import img_height, img_width
 from config import Config
+from utils import get_desc
 from models import db, User, Trophies
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -177,39 +180,35 @@ def update_trophies():
 
 @app.route('/classify/', methods=['POST'])
 def process_photo():
-    photo = request.files["photo"]
+    photo = request.files['photo']
     photo_filename = werkzeug.utils.secure_filename(photo.filename)
     photo.save(photo_filename)
 
-    from classifier import img_height, img_width
-    from labels import labels, get_desc
-
-    model = tf.keras.models.load_model('my_model')
-
-    # Load a new image
     img = tf.keras.preprocessing.image.load_img(
         photo_filename,
         color_mode='grayscale',
         target_size=(img_height, img_width)
     )
-    # Turn it into an array
+
+    # Turn it into an array of pixels
     img_array = tf.keras.preprocessing.image.img_to_array(img)
     # Create a batch/list to give to the model
     img_array = tf.expand_dims(img_array, 0)
 
-    # Prediction
-    pred = model.predict(img_array)
-    # Get the value with the highest confidence
-    score = tf.nn.softmax(pred[0])
+    model = tf.keras.models.load_model('my_model')
+    predictions = model.predict(img_array)
 
-    # The value is used as an index in our list of classes/labels
+    # Get the value with the highest confidence
+    score = tf.nn.softmax(predictions[0])
+
+    labels = [1, 2, 3, 4, 5, 6, 7]
     label = labels[np.argmax(score)]
-    confidence = np.max(score)
+    confidence = np.max(score) * 100
 
     sentence = "I've taken a quick look. \n" + \
-               "This image is {}% likely to be resin code {}.".format(
-                   int(confidence * 100), label
-               )
+        "This image is {}% likely to be resin code {}.".format(
+            int(confidence), label
+        )
     desc = get_desc(label)
 
     # And just throw away the image

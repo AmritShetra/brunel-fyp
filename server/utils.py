@@ -1,13 +1,3 @@
-labels = [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7
-]
-
 one = """The item can be put in the recycling bin.
 Just make sure to empty and rinse it first (if necessary)."""
 two = """The item can be put in the recycling bin. Although...
@@ -36,4 +26,4 @@ def get_desc(label):
     """
     Returns an item from the descriptions list, depending on the label (e.g. 3)
     """
-    return descriptions[label]
+    return descriptions.get(label)
