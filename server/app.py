@@ -196,14 +196,16 @@ def process_photo():
     img_array = tf.expand_dims(img_array, 0)
 
     model = tf.keras.models.load_model('my_model')
+    # An array of the model's confidence for each possible label
     predictions = model.predict(img_array)
 
-    # Get the value with the highest confidence
-    score = tf.nn.softmax(predictions[0])
+    # Softmax makes all of the values between 0 and 1
+    scores = tf.nn.softmax(predictions)
 
     labels = [1, 2, 3, 4, 5, 6, 7]
-    label = labels[np.argmax(score)]
-    confidence = np.max(score) * 100
+    # Use the index of the value with the highest confidence
+    label = labels[np.argmax(scores)]
+    confidence = np.max(scores) * 100
 
     sentence = "I've taken a quick look. \n" + \
         "This image is {}% likely to be resin code {}.".format(
