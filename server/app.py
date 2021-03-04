@@ -11,8 +11,8 @@ from flask_jwt_extended import JWTManager
 
 from classifier import img_height, img_width
 from config import Config
-from utils import get_desc
 from models import db, User, Trophies
+from utils import get_desc, labels
 
 
 app = Flask(__name__)
@@ -199,13 +199,10 @@ def process_photo():
     # An array of the model's confidence for each possible label
     predictions = model.predict(img_array)
 
-    # Softmax makes all of the values between 0 and 1
-    scores = tf.nn.softmax(predictions)
-
-    labels = [1, 2, 3, 4, 5, 6, 7]
-    # Use the index of the value with the highest confidence
-    label = labels[np.argmax(scores)]
-    confidence = np.max(scores) * 100
+    # Use the index of the highest confidence value
+    label = labels[np.argmax(predictions)]
+    # Get the highest confidence value in the array
+    confidence = np.max(predictions) * 100
 
     sentence = "I've taken a quick look. \n" + \
         "This image is {}% likely to be resin code {}.".format(
@@ -214,15 +211,12 @@ def process_photo():
     desc = get_desc(label)
 
     # And just throw away the image
-    tf.io.gfile.remove(
-        photo_filename
-    )
+    tf.io.gfile.remove(photo_filename)
 
     response = {
         "sentence": sentence,
         "desc": desc
     }
-
     return response, 200
 
 

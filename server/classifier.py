@@ -1,14 +1,15 @@
-import tensorflow as tf
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
 # Parameters for loading images
 batch_size = 32
 img_height = 200
 img_width = 200
 
+
 if __name__ == '__main__':
-    # Training dataset - 75%
-    train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+
+    training_dataset = tf.keras.preprocessing.image_dataset_from_directory(
         'images/',
         color_mode='grayscale',
         validation_split=0.25,
@@ -18,8 +19,7 @@ if __name__ == '__main__':
         batch_size=batch_size
     )
 
-    # Validation dataset - 25% split
-    val_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    validation_dataset = tf.keras.preprocessing.image_dataset_from_directory(
         "images/",
         color_mode='grayscale',
         validation_split=0.25,
@@ -30,17 +30,17 @@ if __name__ == '__main__':
     )
 
     # 1 - 7
-    class_names = train_ds.class_names
+    class_names = training_dataset.class_names
 
     # Show a few images and their labels
     plt.figure(figsize=(10, 10))
-    for images, labels in train_ds.take(1):
+    for images, labels in training_dataset.take(1):
         for i in range(9):
             ax = plt.subplot(3, 3, i + 1)
             plt.imshow(images[i].numpy().astype("uint8"))
             plt.title(class_names[labels[i]])
             plt.axis("off")
-            # plt.show()
+    #         plt.show()
 
     # Reduce values from 0-255 to 0-1 range by scaling down the images
     normalisation_layer = tf.keras.layers.experimental.preprocessing.Rescaling(
@@ -52,20 +52,25 @@ if __name__ == '__main__':
     # Create the CNN
     model = tf.keras.Sequential([
         normalisation_layer,
-        tf.keras.layers.Conv2D(16, 3, padding='same', activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
 
         tf.keras.layers.Conv2D(32, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
 
         tf.keras.layers.Conv2D(64, 3, padding='same', activation='relu'),
         tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Dropout(0.2),
+
+        tf.keras.layers.Conv2D(128, 3, activation='relu'),
+        tf.keras.layers.MaxPooling2D(),
+
+        tf.keras.layers.Conv2D(128, 3, activation='relu'),
+        tf.keras.layers.MaxPooling2D(),
 
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dropout(0.5),
+        tf.keras.layers.Dense(256, activation='relu'),
 
-        tf.keras.layers.Dense(num_classes)
+        # Softmax outputs probabilities for each label between 0 and 1
+        tf.keras.layers.Dense(num_classes, activation='softmax'),
     ])
 
     model.compile(
@@ -76,13 +81,12 @@ if __name__ == '__main__':
 
     # Train the model
     model.fit(
-        train_ds,
-        validation_data=val_ds,
+        training_dataset,
+        validation_data=validation_dataset,
         epochs=30
     )
 
-    # Get accuracy
-    test_loss, test_acc = model.evaluate(val_ds)
+    test_loss, test_acc = model.evaluate(validation_dataset)
     print('Test Accuracy: {0:.2f}'.format(test_acc * 100))
 
     # Save model to disk

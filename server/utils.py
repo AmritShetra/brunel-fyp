@@ -1,3 +1,5 @@
+labels = [1, 2, 3, 4, 5, 6, 7]
+
 one = """The item can be put in the recycling bin.
 Just make sure to empty and rinse it first (if necessary)."""
 two = """The item can be put in the recycling bin. Although...
