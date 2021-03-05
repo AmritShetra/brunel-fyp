@@ -9,11 +9,10 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
-from classifier import img_height, img_width
+from classifier import color_mode, img_height, img_width
 from config import Config
 from models import db, User, Trophies
 from utils import get_desc, labels
-
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -169,7 +168,7 @@ def update_trophies():
     if getattr(trophies, key):
         response['message'] = "Trophy is already unlocked"
         return response, 304
-    
+
     # Unlock the trophy
     setattr(trophies, key, True)
     db.session.commit()
@@ -186,7 +185,7 @@ def process_photo():
 
     img = tf.keras.preprocessing.image.load_img(
         photo_filename,
-        color_mode='grayscale',
+        color_mode=color_mode,
         target_size=(img_height, img_width)
     )
 
@@ -204,10 +203,10 @@ def process_photo():
     # Get the highest confidence value in the array
     confidence = np.max(predictions) * 100
 
-    sentence = "I've taken a quick look. \n" + \
-        "This image is {}% likely to be resin code {}.".format(
-            int(confidence), label
-        )
+    sentence = (
+        f"I've taken a quick look. \n"
+        f"This image is {int(confidence)}% likely to be resin code {label}."
+    )
     desc = get_desc(label)
 
     # And just throw away the image

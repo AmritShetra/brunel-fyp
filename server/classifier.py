@@ -1,17 +1,30 @@
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
+
 # Parameters for loading images
-batch_size = 32
+color_mode = 'grayscale'
 img_height = 200
 img_width = 200
+batch_size = 32
+
+
+# Show a few images and their labels
+def show_images():
+    plt.figure(figsize=(10, 10))
+    for images, labels in training_dataset.take(1):
+        for i in range(9):
+            plt.subplot(3, 3, i + 1)
+            plt.imshow(images[i], cmap='gray', interpolation='none')
+            plt.title(f"Class {class_names[labels[i]]}")
+            plt.axis("off")
+    plt.show()
 
 
 if __name__ == '__main__':
-
     training_dataset = tf.keras.preprocessing.image_dataset_from_directory(
         'images/',
-        color_mode='grayscale',
+        color_mode=color_mode,
         validation_split=0.25,
         subset="training",
         seed=123,
@@ -21,7 +34,7 @@ if __name__ == '__main__':
 
     validation_dataset = tf.keras.preprocessing.image_dataset_from_directory(
         "images/",
-        color_mode='grayscale',
+        color_mode=color_mode,
         validation_split=0.25,
         subset="validation",
         seed=123,
@@ -32,15 +45,7 @@ if __name__ == '__main__':
     # 1 - 7
     class_names = training_dataset.class_names
 
-    # Show a few images and their labels
-    plt.figure(figsize=(10, 10))
-    for images, labels in training_dataset.take(1):
-        for i in range(9):
-            ax = plt.subplot(3, 3, i + 1)
-            plt.imshow(images[i].numpy().astype("uint8"))
-            plt.title(class_names[labels[i]])
-            plt.axis("off")
-    #         plt.show()
+    # show_images()
 
     # Reduce values from 0-255 to 0-1 range by scaling down the images
     normalisation_layer = tf.keras.layers.experimental.preprocessing.Rescaling(
