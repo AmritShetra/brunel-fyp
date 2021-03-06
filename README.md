@@ -1,7 +1,13 @@
 ## brunel-fyp
 Investigating the use of Machine Learning and persuasive design to encourage habits of recycling amongst young adults.
 
-The repository contains an Android application developed using Android Studio, and a back-end Flask server developed in Python.
+This project was completed as part of the FYP module of BSc Computer Science at Brunel University London, supervised by [Professor Rob Macredie](https://www.brunel.ac.uk/people/robert-macredie).
+
+### Features
+* Android application
+* Flask API
+* Image classifier developed in Python
+* Docker containers
 
 ### Setup
 * Clone the repository and `cd` into the `server` directory.
@@ -28,7 +34,7 @@ flask shell
 * You can then run database queries, like below, where we look at all User instances in the database (followed by an example of filtering).
 ```
 User.query.all()
-user = User.query.filter_by(username='Amrit').one()
+user = User.query.filter_by(username='Amrit').first()
 ```
 * A set of tests can be run in the container:
 ```
@@ -40,3 +46,4 @@ python tests.py
 * [android-async-http](https://loopj.com/android-async-http/) used for API calls.
 * [Flask-JWT-Extended](https://flask-jwt-extended.readthedocs.io/en/stable/) used for API token-based authentication.
 * [Flask-Testing](https://pythonhosted.org/Flask-Testing/) used for API tests.
+* [Kaggle image dataset](https://www.kaggle.com/piaoya/plastic-recycling-codes) used as dataset when training the classifier.
