@@ -1,4 +1,3 @@
-import base64
 import flask_testing
 import unittest
 
@@ -48,7 +47,7 @@ class BaseTest(flask_testing.TestCase):
         db.drop_all()
 
 
-class TestViews(BaseTest):
+class TestHome(BaseTest):
 
     def test_home(self):
         response = self.client.get("/")
@@ -57,7 +56,10 @@ class TestViews(BaseTest):
         user = User.query.filter_by(username="valid_username").first()
         self.assertEqual(user.username, "valid_username")
 
-    def test_create_user(self):
+
+class TestRegister(BaseTest):
+
+    def test_create_user_both_invalid(self):
         # Pass data identical to the test user's account
         data = {
             "username": "valid_username",
@@ -71,26 +73,55 @@ class TestViews(BaseTest):
         # Username/email is taken
         self.assert_status(response, 409)
 
-        # Change the username (but the email is still taken)
-        data['username'] = 'Amrit'
+    def test_create_user_one_invalid(self):
+        # Same details, but username is different
+        data = {
+            "username": "Amrit",
+            "password": "valid_password",
+            "email": "valid_email@email.com",
+            "first_name": "valid_first_name",
+            "last_name": "valid_last_name"
+        }
+
         response = self.client.post("/register/", json=data)
         self.assert_status(response, 409)
 
-        # Change the email too
-        data['email'] = 'adifferentemail@email.com'
+        # Do the reverse (different email, other details are same)
+        data = {
+            "username": "valid_username",
+            "password": "valid_password",
+            "email": "new_email@email.com",
+            "first_name": "valid_first_name",
+            "last_name": "valid_last_name"
+        }
+        response = self.client.post("/register/", json=data)
+        self.assert_status(response, 409)
+
+    def test_create_user_success(self):
+        # New username and email
+        data = {
+            "username": "Amrit",
+            "password": "valid_password",
+            "email": "amrit.shetra@email.com",
+            "first_name": "valid_first_name",
+            "last_name": "valid_last_name"
+        }
         response = self.client.post("/register/", json=data)
         self.assert_status(response, 200)
 
-        # Make sure there's a new User in the database
-        new_user = User.query.filter_by(username='Amrit').one()
+        # Make sure there is a new User in the database
+        new_user = User.query.filter_by(username="Amrit").first()
         self.assertEqual(new_user.username, 'Amrit')
 
-        # Check that the Trophies object has been created
-        trophies = Trophies.query.filter_by(user_id=1).one()
+        # Make sure that the Trophies object has been created
+        trophies = Trophies.query.filter_by(user_id=1).first()
         self.assertEqual(trophies.user_id, 1)
 
-    def test_login(self):
-        # An invalid username (i.e. 'not found') should return 401
+
+class TestLogin(BaseTest):
+
+    def test_login_wrong_details(self):
+        # Invalid username should return "Not Found"
         data = {
             "username": "invalid_username",
             "password": "valid_password",
@@ -98,18 +129,25 @@ class TestViews(BaseTest):
         response = self.client.post("/login/", json=data)
         self.assert401(response)
 
-        # Swap to a valid username, but this time, use the wrong password
+        # Swap to valid username, but use wrong password
         data['username'] = "valid_username"
         data['password'] = "invalid_password"
         response = self.client.post("/login/", json=data)
         self.assert401(response)
 
-        # And finally, use the correct password
-        data['password'] = "valid_password"
+    def test_login_correct_details(self):
+        data = {
+            "username": "valid_username",
+            "password": "valid_password"
+        }
         response = self.client.post("/login/", json=data)
         self.assert200(response)
+        self.assertIsNotNone(response.get_json()['access_token'])
 
-    def test_get_user(self):
+
+class TestProfile(BaseTest):
+
+    def test_get_user_success(self):
         data = {
             'username': 'valid_username',
             'password': 'valid_password'
@@ -122,8 +160,9 @@ class TestViews(BaseTest):
         }
         response = self.client.get("/users/", headers=headers)
         self.assert200(response)
+        self.assertIsNotNone(response.get_json())
 
-    def test_update_user(self):
+    def test_update_user_invalid(self):
         data = {
             'username': 'valid_username',
             'password': 'valid_password'
@@ -138,7 +177,7 @@ class TestViews(BaseTest):
         new_user = User(
             username='new_username',
             password='new_password',
-            email='new_email',
+            email='new_email@email.com',
             first_name='new_first_name',
             last_name='new_last_name'
         )
@@ -148,17 +187,36 @@ class TestViews(BaseTest):
         data = {
             "username": "new_username",
             "password": "valid_password",
-            "email": "valid_email",
+            "email": "valid_email@email.com",
             "first_name": "valid_first_name",
             "last_name": "valid_last_name"
         }
         response = self.client.put("/users/edit/", json=data, headers=headers)
         self.assertStatus(response, 409)
 
-        # Same logic as email, so move on and test if it works with valid input
-        data['username'] = "a_new_username"
+    def test_update_user_success(self):
+        data = {
+            'username': 'valid_username',
+            'password': 'valid_password'
+        }
+        response = self.client.post("/login/", json=data)
+        token = response.json['access_token']
+        headers = {
+            'Authorization': 'Bearer {}'.format(token)
+        }
+
+        data = {
+            "username": "this_should_work",
+            "password": "valid_password",
+            "email": "valid_email@email.com",
+            "first_name": "valid_first_name",
+            "last_name": "valid_last_name"
+        }
         response = self.client.put("/users/edit/", json=data, headers=headers)
         self.assert200(response)
+
+
+class TestTrophies(BaseTest):
 
     def test_get_trophies(self):
         data = {
@@ -202,8 +260,11 @@ class TestViews(BaseTest):
         response = self.client.put("/trophies/", json=data, headers=headers)
         self.assertStatus(response, 304)
 
-    def test_process_photo(self):
-        image = "images/1/1_image_one.png"
+
+class TestClassify(BaseTest):
+
+    def test_process_photo_success(self):
+        image = "images/1/85943598-ec9b-4da5-9221-8c32b5742e72.jpg"
         image_file = FileStorage(
             stream=open(image, "rb"),
             filename="testing_image.png",
@@ -218,14 +279,7 @@ class TestViews(BaseTest):
             data=data
         )
         self.assert200(response)
-
-        # Check if the response has the correct prediction
-        # response_data = response.get_json()
-        # print(response_data)
-        # correct_answer = False
-        # if "1" in response_data['sentence'].split():
-        #     correct_answer = True
-        # self.assertTrue(correct_answer)
+        self.assertIsNotNone(response.get_data())
 
 
 if __name__ == '__main__':
