@@ -46,4 +46,4 @@ python tests.py
 * [android-async-http](https://loopj.com/android-async-http/) used for API calls.
 * [Flask-JWT-Extended](https://flask-jwt-extended.readthedocs.io/en/stable/) used for API token-based authentication.
 * [Flask-Testing](https://pythonhosted.org/Flask-Testing/) used for API tests.
-* [Kaggle image dataset](https://www.kaggle.com/piaoya/plastic-recycling-codes) used as dataset when training the classifier.
+* [Kaggle image dataset](https://www.kaggle.com/piaoya/plastic-recycling-codes) used when training the classifier.
