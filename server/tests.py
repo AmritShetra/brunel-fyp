@@ -279,7 +279,7 @@ class TestClassify(BaseTest):
             data=data
         )
         self.assert200(response)
-        self.assertIsNotNone(response.get_data())
+        self.assertIsNotNone(response.get_json())
 
 
 if __name__ == '__main__':
