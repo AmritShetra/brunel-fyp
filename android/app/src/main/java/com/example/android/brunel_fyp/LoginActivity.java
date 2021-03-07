@@ -27,6 +27,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Load profile data passed from previous Intent
+        Bundle extras = getIntent().getExtras();
+        if (extras != null && extras.getBoolean("sign_up")) {
+            Snackbar.make(findViewById(android.R.id.content), "Sign Up successful", Snackbar.LENGTH_LONG).show();
+        }
+
         EditText userField = findViewById(R.id.username);
         EditText passwordField = findViewById(R.id.password);
 

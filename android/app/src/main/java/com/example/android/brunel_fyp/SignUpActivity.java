@@ -160,6 +160,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra("sign_up", true);
                 startActivity(intent);
                 finish();
             }
