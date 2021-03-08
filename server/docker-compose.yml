@@ -1,6 +1,5 @@
 version: '3.4'
 
-# https://stackoverflow.com/a/54503302
 x-environment: &env
     POSTGRES_USER: user
     POSTGRES_PASSWORD: password
