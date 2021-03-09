@@ -17,12 +17,14 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="15dp"
+        android:layout_toEndOf="@+id/chatbotAvatar"
         android:background="@drawable/chatbot_message_shape"
         android:fontFamily="@font/lato"
+        android:padding="10dp"
         android:text="@string/intro_message"
         android:textColor="@color/background"
-        android:textSize="15sp"
-        android:padding="10dp" />
+        android:textSize="15sp" />
 
     <LinearLayout
         android:id="@+id/photoContainer"
