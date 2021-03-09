@@ -19,7 +19,7 @@
         android:background="@color/profile_green"
         android:layout_alignParentTop="true" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="350dp"
         android:layout_height="match_parent"

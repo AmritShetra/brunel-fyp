@@ -3,8 +3,8 @@ package com.example.android.brunel_fyp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +22,12 @@ import org.json.JSONObject;
 import cz.msebera.android.httpclient.Header;
 
 public class ProfileFragment extends Fragment {
-    Context context;
+    private Context context;
 
-    TextView usernameText, firstNameText, lastNameText, emailText, passwordText;
-    Switch passwordSwitch;
-    ProgressBar progressBar;
-    Boolean canEdit = false;
+    private TextView usernameText, firstNameText, lastNameText, emailText, passwordText;
+    private Switch passwordSwitch;
+    private ProgressBar progressBar;
+    private Boolean canEdit = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
