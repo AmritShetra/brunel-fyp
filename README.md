@@ -10,8 +10,11 @@ This project was completed as part of the FYP module of BSc Computer Science at 
 * Docker containers
 
 ### Setup
-* Clone the repository and `cd` into the `server` directory.
-* Build the docker container:
+* Clone the repository and run a script to install dependencies:
+```
+bash setup.sh
+```
+* `cd` into the `server` directory and build the docker container:
 ```
 docker-compose up --build
 ```
