@@ -55,11 +55,11 @@ def create_user():
     # If not, add the user to the database
     user = User(
         username=data["username"],
-        password=data["password"],
         email=data["email"],
         first_name=data["first_name"],
         last_name=data["last_name"]
     )
+    user.set_password(data['password'])
     db.session.add(user)
 
     # And create a trophies object with the new user's id
@@ -88,7 +88,7 @@ def login():
         response['message'] = "Username not found."
         return response, 401
 
-    if password == user.password:
+    if user.check_password(password):
         response['access_token'] = create_access_token(identity=user.id)
         return response
     else:
@@ -103,7 +103,6 @@ def get_user():
     user = User.query.filter_by(id=current_user).first()
     response = {
         "username": user.username,
-        "password": user.password,
         "email": user.email,
         "first_name": user.first_name,
         "last_name": user.last_name
@@ -134,7 +133,6 @@ def update_user():
             return response, 409
 
     user.username = data['username']
-    user.password = data['password']
     user.email = data['email']
     user.first_name = data['first_name']
     user.last_name = data['last_name']
