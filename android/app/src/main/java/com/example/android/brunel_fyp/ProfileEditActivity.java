@@ -4,13 +4,11 @@ import android.content.Intent;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -32,7 +30,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_edit);
 
         EditText usernameField = findViewById(R.id.username);
-        EditText passwordField = findViewById(R.id.password);
         EditText firstNameField = findViewById(R.id.firstName);
         EditText lastNameField = findViewById(R.id.lastName);
         EditText emailField = findViewById(R.id.email);
@@ -41,7 +38,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             usernameField.setText(extras.getString("username"));
-            passwordField.setText(extras.getString("password"));
             emailField.setText(extras.getString("email"));
             firstNameField.setText(extras.getString("first_name"));
             lastNameField.setText(extras.getString("last_name"));
@@ -54,7 +50,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         saveChanges.setOnClickListener(view -> {
             HashMap<String, String> details = new HashMap<>();
             details.put("username", usernameField.getText().toString());
-            details.put("password", passwordField.getText().toString());
             details.put("email", emailField.getText().toString());
             details.put("first_name", firstNameField.getText().toString());
             details.put("last_name", lastNameField.getText().toString());
@@ -67,16 +62,6 @@ public class ProfileEditActivity extends AppCompatActivity {
                 }
             }
         });
-
-        // Show the password if it's checked. Otherwise, hide it
-        Switch passwordSwitch = findViewById(R.id.passwordSwitch);
-        passwordSwitch.setOnClickListener(view -> {
-            // https://stackoverflow.com/questions/3685790/how-to-switch-between-hide-and-view-password
-            if (passwordSwitch.isChecked())
-                passwordField.setTransformationMethod(null);
-            else
-                passwordField.setTransformationMethod(new PasswordTransformationMethod());
-        });
     }
 
     private boolean validateInputs(HashMap<String, String> details) {
@@ -86,12 +71,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         String username = details.get("username");
         if (!username.matches("[A-Za-z0-9_]+")) {
             text += "Username must be alphanumeric characters only. \n";
-            valid = false;
-        }
-
-        String password = details.get("password");
-        if (password.length() < 6) {
-            text += "Password must be greater than 6 characters. \n";
             valid = false;
         }
 

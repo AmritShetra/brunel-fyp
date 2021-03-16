@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -24,8 +22,7 @@ import cz.msebera.android.httpclient.Header;
 public class ProfileFragment extends Fragment {
     private Context context;
 
-    private TextView usernameText, firstNameText, lastNameText, emailText, passwordText;
-    private Switch passwordSwitch;
+    private TextView usernameText, firstNameText, lastNameText, emailText;
     private ProgressBar progressBar;
     private Boolean canEdit = false;
 
@@ -40,14 +37,10 @@ public class ProfileFragment extends Fragment {
         ImageView edit = parentHolder.findViewById(R.id.editProfile);
 
         usernameText = parentHolder.findViewById(R.id.username);
-        passwordText = parentHolder.findViewById(R.id.password);
         emailText = parentHolder.findViewById(R.id.email);
         firstNameText = parentHolder.findViewById(R.id.firstName);
         lastNameText = parentHolder.findViewById(R.id.lastName);
 
-        passwordText.setTransformationMethod(new PasswordTransformationMethod());
-
-        passwordSwitch = parentHolder.findViewById(R.id.passwordSwitch);
         progressBar = parentHolder.findViewById(R.id.progressBar);
 
         loadProfileData();
@@ -65,23 +58,11 @@ public class ProfileFragment extends Fragment {
             if (canEdit) {
                 Intent intent = new Intent(getContext(), ProfileEditActivity.class);
                 intent.putExtra("username", usernameText.getText().toString());
-                intent.putExtra("password", passwordText.getText().toString());
                 intent.putExtra("email", emailText.getText().toString());
                 intent.putExtra("first_name", firstNameText.getText().toString());
                 intent.putExtra("last_name", lastNameText.getText().toString());
                 startActivity(intent);
             }
-        });
-
-        // Switch between the clear-text password and asterisks version of it
-        passwordSwitch.setOnClickListener(view -> {
-            if (passwordText.getText().toString().equals(""))
-                return;
-
-            if (passwordSwitch.isChecked())
-                passwordText.setTransformationMethod(null);
-            else
-                passwordText.setTransformationMethod(new PasswordTransformationMethod());
         });
 
         return parentHolder;
@@ -114,7 +95,6 @@ public class ProfileFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     usernameText.setText(response.getString("username"));
-                    passwordText.setText(response.getString("password"));
                     emailText.setText(response.getString("email"));
                     firstNameText.setText(response.getString("first_name"));
                     lastNameText.setText(response.getString("last_name"));
@@ -123,7 +103,6 @@ public class ProfileFragment extends Fragment {
                     e.printStackTrace();
                 }
                 canEdit = true;
-                passwordSwitch.setEnabled(true);
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
