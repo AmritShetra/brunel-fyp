@@ -27,11 +27,11 @@ class BaseTest(flask_testing.TestCase):
 
         user = User(
             username="valid_username",
-            password="valid_password",
             email="valid_email@email.com",
             first_name="valid_first_name",
             last_name="valid_last_name"
         )
+        user.set_password("valid_password")
         db.session.add(user)
 
         user_id = User.query.filter_by(username=user.username).one().id
@@ -176,17 +176,16 @@ class TestProfile(BaseTest):
         # Make another account so we can test username/email clashes
         new_user = User(
             username='new_username',
-            password='new_password',
             email='new_email@email.com',
             first_name='new_first_name',
             last_name='new_last_name'
         )
+        new_user.set_password('new_password')
         db.session.add(new_user)
 
         # Send a request to update username (which is taken, so returns 409)
         data = {
             "username": "new_username",
-            "password": "valid_password",
             "email": "valid_email@email.com",
             "first_name": "valid_first_name",
             "last_name": "valid_last_name"
@@ -207,7 +206,6 @@ class TestProfile(BaseTest):
 
         data = {
             "username": "this_should_work",
-            "password": "valid_password",
             "email": "valid_email@email.com",
             "first_name": "valid_first_name",
             "last_name": "valid_last_name"
