@@ -6,4 +6,6 @@ if [ ! -d "$FILE" ]; then
   python classifier.py
 fi
 
+echo "Image classifier already exists... moving on."
+
 exec "$@"

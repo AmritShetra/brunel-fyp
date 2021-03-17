@@ -227,7 +227,6 @@ def make_shell_context():
     }
 
 
-# https://stackoverflow.com/questions/7023052/configure-flask-dev-server-to-be-visible-across-the-network
 if __name__ == '__main__':
     # Create database tables
     db.create_all()
