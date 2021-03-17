@@ -230,4 +230,4 @@ def make_shell_context():
 if __name__ == '__main__':
     # Create database tables
     db.create_all()
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)

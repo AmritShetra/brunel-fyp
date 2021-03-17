@@ -13,7 +13,7 @@ services:
         build: .
         command: python app.py
         ports:
-            - "0.0.0.0:80:5000"
+            - "0.0.0.0:80:80"
         environment: *env
         volumes:
             - ".:/code/"
