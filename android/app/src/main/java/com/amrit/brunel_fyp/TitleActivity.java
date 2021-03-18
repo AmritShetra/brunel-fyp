@@ -1,4 +1,4 @@
-package com.example.android.brunel_fyp;
+package com.amrit.brunel_fyp;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;

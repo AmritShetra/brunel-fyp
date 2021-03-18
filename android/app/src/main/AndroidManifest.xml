@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.android.brunel_fyp">
+    package="com.amrit.brunel_fyp">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -19,7 +19,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".TitleActivity"
+            android:name="com.amrit.brunel_fyp.TitleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,21 +30,21 @@
         </activity>
 
         <activity
-            android:name=".LoginActivity"
-            android:parentActivityName=".TitleActivity"
+            android:name="com.amrit.brunel_fyp.LoginActivity"
+            android:parentActivityName="com.amrit.brunel_fyp.TitleActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".SignUpActivity"
-            android:parentActivityName=".TitleActivity"
+            android:name="com.amrit.brunel_fyp.SignUpActivity"
+            android:parentActivityName="com.amrit.brunel_fyp.TitleActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.amrit.brunel_fyp.MainActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ProfileEditActivity"
+            android:name="com.amrit.brunel_fyp.ProfileEditActivity"
             android:screenOrientation="portrait" />
 
         <meta-data

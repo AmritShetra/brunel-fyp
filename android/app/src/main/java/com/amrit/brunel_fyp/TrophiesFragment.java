@@ -1,4 +1,4 @@
-package com.example.android.brunel_fyp;
+package com.amrit.brunel_fyp;
 
 
 import android.os.Bundle;
@@ -28,8 +28,8 @@ public class TrophiesFragment extends Fragment {
     private ArrayList<Boolean> statuses = new ArrayList<>();
     private ArrayList<String> names = new ArrayList<>(
             Arrays.asList(
-                    "Trophy 1",
-                    "Trophy 2"
+                    "Hello, World!",
+                    "1 Month"
             )
     );
     private ArrayList<String> labels = new ArrayList<>(
