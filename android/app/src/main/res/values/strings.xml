@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">brunel-fyp</string>
+    <string name="app_name">Recycler</string>
 
     <string name="login">Log In</string>
     <string name="signup">Sign Up</string>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.amrit.brunel_fyp">
+    package="com.amrit.recycler">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -19,7 +20,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.amrit.brunel_fyp.TitleActivity"
+            android:name="com.amrit.recycler.TitleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,21 +31,21 @@
         </activity>
 
         <activity
-            android:name="com.amrit.brunel_fyp.LoginActivity"
-            android:parentActivityName="com.amrit.brunel_fyp.TitleActivity"
+            android:name="com.amrit.recycler.LoginActivity"
+            android:parentActivityName="com.amrit.recycler.TitleActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.amrit.brunel_fyp.SignUpActivity"
-            android:parentActivityName="com.amrit.brunel_fyp.TitleActivity"
+            android:name="com.amrit.recycler.SignUpActivity"
+            android:parentActivityName="com.amrit.recycler.TitleActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.amrit.brunel_fyp.MainActivity"
+            android:name="com.amrit.recycler.MainActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.amrit.brunel_fyp.ProfileEditActivity"
+            android:name="com.amrit.recycler.ProfileEditActivity"
             android:screenOrientation="portrait" />
 
         <meta-data

@@ -1,4 +1,4 @@
-package com.amrit.brunel_fyp;
+package com.amrit.recycler;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;

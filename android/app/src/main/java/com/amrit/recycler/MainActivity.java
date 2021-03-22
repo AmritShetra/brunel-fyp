@@ -1,4 +1,4 @@
-package com.amrit.brunel_fyp;
+package com.amrit.recycler;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;

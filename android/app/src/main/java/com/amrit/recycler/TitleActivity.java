@@ -1,4 +1,4 @@
-package com.amrit.brunel_fyp;
+package com.amrit.recycler;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
