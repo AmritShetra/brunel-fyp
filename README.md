@@ -3,10 +3,9 @@ Investigating the use of Machine Learning and persuasive design to encourage hab
 
 This project was completed as part of the FYP module of BSc Computer Science at Brunel University London, supervised by [Professor Rob Macredie](https://www.brunel.ac.uk/people/robert-macredie).
 
-### Features
-* Android application
+* Android application named "Recycler"
 * Flask API
-* Image classifier developed in Python
+* Python image classifier
 * Docker containers
 
 ### Setup
@@ -28,7 +27,7 @@ SERVER_ADDRESS=127.0.0.1
 ```
 * Install the Android app on your phone or use the emulator within Android Studio itself.
 
-### Usage
+### Commands run within the container
 * To observe the database, you can enter the container and open up a shell instance:
 ```
 docker exec -it api /bin/bash
