@@ -33,7 +33,7 @@ flask shell
 You can then run database queries (like below, where we look at all users and filter for a specific one):
 ```
 User.query.all()
-user = Usery.query.filter_by(username="Amrit").first()
+user = User.query.filter_by(username="Amrit").first()
 ```
 
 A set of tests can also be run in the container, using `python tests.py`.
