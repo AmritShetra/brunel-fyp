@@ -2,7 +2,9 @@
 
 This project was completed as part of the final year project module of BSc Computer Science at Brunel University London. The dissertation is titled "A Smartphone Application to Encourage Recycling" and was supervised by [Professor Rob Macredie](https://www.brunel.ac.uk/people/robert-macredie).
 
-I used Android Studio to develop a smartphone application, and the Flask framework to create a RESTful API - this contains an image classifier and communicates with a database. Docker was used to deploy the API and database within an isolated container - this was stored within a Microsoft Azure server, which provides a public IP address that the Android app can connect to.
+I used Android Studio to develop a smartphone application, and the Flask framework to create a RESTful API - this contains an image classifier and communicates with a database. The solution allows users to interact with a chatbot, upload a photo of an item's resin identification code, and receive guidance on how to recycle it. This is combined with a reward system which provides an incentive to keep using the system - and ultimately encourage positive recycling habits.
+
+Docker was used to deploy the API and database within an isolated container - this was stored within a Microsoft Azure server, which provides a public IP address that the Android app can connect to.
 
 The architecture can be seen below:
 
