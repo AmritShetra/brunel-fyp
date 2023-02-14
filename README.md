@@ -19,7 +19,7 @@ The app needs the server's IP address - you can find this out using a command su
 SERVER_ADDRESS=127.0.0.1
 ```
 
-As I was using version control, I wanted to prevent future commits to the `env` file, so I used this command: In order to prevent future commits to the `env` file, use this command:
+As I was using version control, I wanted to prevent future commits to the `env` file, so I used this command:
 ```
 git update-index --skip-worktree android/app/src/main/assets/env
 ```
